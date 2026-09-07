@@ -1,0 +1,6 @@
+.DS_Store
+*.log
+lazy-lock.json
+undo/
+swap/
+sessions/

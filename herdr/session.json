@@ -1,0 +1,40 @@
+{
+  "version": 3,
+  "workspaces": [
+    {
+      "id": "wW",
+      "custom_name": null,
+      "identity_cwd": "/Users/hermannklier",
+      "public_pane_numbers": {
+        "5": 1
+      },
+      "next_public_pane_number": 3,
+      "public_tab_numbers": [
+        1
+      ],
+      "next_public_tab_number": 3,
+      "tabs": [
+        {
+          "custom_name": null,
+          "layout": {
+            "Pane": 5
+          },
+          "panes": {
+            "5": {
+              "cwd": "/Users/hermannklier"
+            }
+          },
+          "zoomed": false,
+          "focused": 5,
+          "root_pane": 5
+        }
+      ],
+      "active_tab": 0
+    }
+  ],
+  "active": 0,
+  "selected": 0,
+  "sidebar_width": 26,
+  "sidebar_section_split": 0.5,
+  "collapsed_space_keys": []
+}
