@@ -4,3 +4,10 @@ lazy-lock.json
 undo/
 swap/
 sessions/
+# Local gentle-ai / skill registry runtime state
+.atl/
+
+# Herdr runtime state
+herdr/session.json
+herdr/release-notes.json
+herdr/.plugins.lock

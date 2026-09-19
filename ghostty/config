@@ -107,3 +107,7 @@ palette = 15=#f3f6f9
 macos-option-as-alt = "left"
 
 command = /opt/homebrew/bin/herdr
+
+shell-integration = none
+cursor-style = block
+cursor-style-blink = false
