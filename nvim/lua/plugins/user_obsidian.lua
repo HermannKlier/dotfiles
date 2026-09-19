@@ -13,10 +13,18 @@ return {
         path = vim.fn.expand("~/Documents/Obsidian/Proyectos"),
       },
     },
-    new_notes_location = "01. Inbox",
+
+    notes_subdir = "01. Inbox",
+    new_notes_location = "notes_subdir",
+
+    picker = {
+      name = "snacks.picker",
+    },
+
     attachments = {
       folder = "05. Files",
     },
+
     templates = {
       folder = "04. Plantillas",
       date_format = "%Y-%m-%d",
