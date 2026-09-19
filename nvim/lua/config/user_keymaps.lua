@@ -86,3 +86,8 @@ vim.keymap.set("n", "<leader>oi", function()
     vim.notify("No se detectó ninguna imagen o archivo bajo el cursor", vim.log.levels.WARN)
   end
 end, { desc = "Obsidian: Previsualizar imagen bajo el cursor (Quick Look)" })
+
+-- Snacks: selector de buffers
+vim.keymap.set("n", "<leader>fb", function()
+  Snacks.picker.buffers()
+end, { desc = "Find Buffers" })
