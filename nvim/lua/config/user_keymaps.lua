@@ -6,6 +6,13 @@
 vim.keymap.set("n", "<leader>owp", "<cmd>Obsidian workspace Proyectos<CR>", { desc = "Ir a baúl Proyectos" })
 vim.keymap.set("n", "<leader>owh", "<cmd>Obsidian workspace HK<CR>", { desc = "Ir a baúl HK" })
 
+vim.keymap.set(
+  "n",
+  "<leader>oq",
+  "<cmd>Obsidian quick_switch<CR>",
+  { desc = "Obsidian: Quick Switch" }
+)
+
 -- Zotero / Citas bibliográficas
 vim.keymap.set("n", "<leader>cb", "<cmd>Telescope bibtex<CR>", { desc = "Zotero: Buscar Cita (BibTeX)" })
 vim.keymap.set("n", "<leader>cz", "<cmd>Telescope bibtex<CR>", { desc = "Zotero: Insertar Cita [@citekey]" })

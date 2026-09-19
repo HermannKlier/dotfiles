@@ -1,6 +1,8 @@
 return {
   "obsidian-nvim/obsidian.nvim",
   opts = {
+    legacy_commands = false,
+
     workspaces = {
       {
         name = "HK",
