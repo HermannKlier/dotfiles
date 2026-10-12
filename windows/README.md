@@ -1,32 +1,55 @@
 # Windows Enterprise: Gentleman Programming
 
-Configuracion reproducible para Windows 11 Enterprise sin privilegios administrativos, sujeta a autorizacion de TI.
+Guia para recuperar el entorno en Windows 11 Enterprise sin permisos de administrador, **siempre sujeto a las politicas de TI**. No se modifican los archivos existentes de macOS.
 
-**Estado:** etapa inicial de documentacion y verificacion. No hay instalacion automatica. La configuracion de Mac (`nvim/`, `ghostty/`, `herdr/`) queda intacta.
+## Estado de la automatizacion
 
-## Proceso previsto
-1. Confirmar las herramientas autorizadas por TI.
-2. Obtener este repositorio sin incluir informacion sensible.
-3. Consultar `versions.json` y validar los paquetes y sus SHA-256.
-4. Instalar herramientas aprobadas en ubicaciones de usuario.
-5. Adaptar GentlemanNvim para Windows; realizar respaldo antes de reemplazar configuraciones.
-6. Ejecutar el diagnostico de solo lectura `windows/verify.ps1`.
-7. Dentro de Neovim, ejecutar `:checkhealth lazy`, `:checkhealth lazyvim`, `:checkhealth fzf_lua`, `:checkhealth nvim-treesitter` y `:checkhealth`.
+- `install.ps1`: primera version, **no probada aun en un equipo Windows nuevo**. Solo contempla **GCC/WinLibs, fzf y LazyGit**.
+- `verify.ps1`: verificacion de comandos disponibles; no instala nada.
+- `versions.json`: versiones observadas y SHA-256 verificados de esos tres ZIP.
+- Git, Node.js, Go, Neovim y Gentle Shell aun **no forman parte del instalador**.
 
-Desde PowerShell, en la raiz de este repositorio:
+## Prueba segura en un equipo donde las herramientas ya funcionan
+
+Desde PowerShell, tras clonar **esta rama** en una carpeta separada:
 
 ```powershell
-& .\windows\verify.ps1
+git clone --branch setup/windows-enterprise --single-branch https://github.com/HermannKlier/dotfiles.git "$env:USERPROFILE\apps\dotfiles-windows"
 ```
 
-## Alcance y limitaciones
-- GentlemanNvim y Gentle Shell funcionan en el equipo de referencia.
-- La instalacion nativa de Gentle AI **no esta resuelta**: error `spawn EPERM` al verificar su binario; solicitar revision a TI, sin eludir bloqueos.
-- La ruta de Obsidian debe ser elegida por cada usuario y equipo. No copiar ni publicar el contenido de las notas.
-- El proveedor Node.js de Neovim y herramientas opcionales de Mason/Snacks quedan pendientes de evaluar.
-- Los archivos actuales de Mac **no se migran ni modifican** por este procedimiento.
+Primero revisar la sintaxis sin ejecutar el instalador:
+
+```powershell
+$script = "$env:USERPROFILE\apps\dotfiles-windows\windows\install.ps1"
+$tokens = $null
+$errors = $null
+[System.Management.Automation.Language.Parser]::ParseFile($script, [ref]$tokens, [ref]$errors) | Out-Null
+$errors | Select-Object Message, Extent
+```
+
+Si no hay errores de sintaxis y la politica de ejecucion permite scripts autorizados:
+
+```powershell
+& $script
+```
+
+**Sin `-Apply` solamente muestra el plan o detecta las herramientas instaladas.** No descarga, no instala y no modifica el PATH. Si una politica impide ejecutar archivos PS1, no la cambies ni intentes eludirla: consulta a TI.
+
+Una vez validado con TI, `-Apply -Component GCC`, `fzf` o `LazyGit` permite instalar **solo** el componente seleccionado, verificando SHA-256. Aun no se recomienda `-Apply` sin la revision de su primer uso en ese equipo.
+
+## Pasos para restaurar GentlemanNvim
+
+1. Confirmar autorizacion de TI y descargar solo fuentes oficiales.
+2. Instalar herramientas necesarias en directorios de usuario.
+3. Respaldar la configuracion activa de Neovim antes de cualquier reemplazo. El repositorio raiz contiene `nvim/` del Mac; no copiarlo automaticamente encima de Windows.
+4. Elegir la ruta local del vault Obsidian; nunca publicar notas ni rutas privadas como configuracion universal.
+5. Revisar `docs/troubleshooting-windows.md`.
+6. Desde Neovim ejecutar `:checkhealth lazy`, `:checkhealth lazyvim`, `:checkhealth fzf_lua`, `:checkhealth nvim-treesitter` y `:checkhealth`.
+
+## Estado de Gentle AI
+
+Gentle Shell funciona con Pi integrado. Gentle AI **nativo no funciona** en el equipo de referencia (`spawn EPERM` al validar `gentle-ai.exe`); requiere revision de TI. No deshabilitar Defender ni otros controles.
 
 ## Seguridad
-Este repositorio es **publico**. No guardar tokens, `auth.json`, contrasenas, `.env`, documentos corporativos ni notas privadas. Las descargas y ejecuciones solo deben realizarse conforme a las politicas corporativas.
 
-Consultar `docs/troubleshooting-windows.md` para los problemas detectados.
+Repositorio **publico**. No agregar credenciales, tokens, `auth.json`, archivos `.env`, datos corporativos ni contenido del vault Obsidian.
