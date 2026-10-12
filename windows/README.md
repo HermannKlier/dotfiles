@@ -53,3 +53,9 @@ Gentle Shell funciona con Pi integrado. Gentle AI **nativo no funciona** en el e
 ## Seguridad
 
 Repositorio **publico**. No agregar credenciales, tokens, `auth.json`, archivos `.env`, datos corporativos ni contenido del vault Obsidian.
+
+## Comprobacion en equipo de referencia (12 octubre 2026)
+
+Se clono la rama `setup/windows-enterprise`, se verifico sintaxis de `install.ps1` con el parser de PowerShell (sin errores) y se ejecuto sin `-Apply`: WinLibs GCC, fzf y LazyGit aparecieron como `[PRESENT]`, sin cambios. Despues, `verify.ps1` informo **11/11 herramientas [OK]** y detecto `%LOCALAPPDATA%\nvim\init.lua`. Herramientas: Git 2.53.0.windows.2, Node.js 24.17.0, npm 11.13.0, Go 1.27.2, Neovim 0.12.4, ripgrep 15.2.0, fd 10.5.0, GCC 16.2.0, fzf 0.74.4, LazyGit 0.65.1 y Gentle Shell 4.1.0.
+
+Este resultado confirma la deteccion de herramientas **ya instaladas**, no la restauracion desde cero ni la instalacion mediante `-Apply`. El siguiente paso es diagnosticar y respaldar GentlemanNvim antes de automatizar copias o reemplazos.
