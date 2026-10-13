@@ -6,9 +6,13 @@
   Does not install plugins or modify macOS dotfiles.
 #>
 [CmdletBinding()]
-param([switch]$Apply)
+param(
+  [switch]$Apply,
+  [string]$ConfigRoot = (Join-Path $env:LOCALAPPDATA 'nvim')
+)
 $ErrorActionPreference = 'Stop'
-$root = Join-Path $env:LOCALAPPDATA 'nvim'
+$root = [System.IO.Path]::GetFullPath($ConfigRoot)
+Write-Host ('Configuration target: ' + $root)
 $paths = @{
   node = Join-Path $root 'lua\config\nodejs.lua'
   lazy = Join-Path $root 'lua\config\lazy.lua'
