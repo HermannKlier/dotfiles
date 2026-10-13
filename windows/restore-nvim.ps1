@@ -32,7 +32,7 @@ function Replace-Checked {
     return $InputText.Replace($Old,$New)
   }
   if ($InputText.Contains($New)) { return $InputText }
-  throw "Unexpected version of $Label: required marker absent. Nothing changed."
+  throw "Unexpected version of ${Label}: required marker absent. Nothing changed."
 }
 # Node version tests: use argument lists, not a shell command string.
 $updated.node = Replace-Checked $updated.node 'vim.fn.system(node_path .. " --version 2>/dev/null")' 'vim.fn.system({ node_path, "--version" })' 'nodejs.lua/version setup'
