@@ -1,9 +1,5 @@
 #requires -Version 5.1
-<#
-  Configure nvim-orgmode on Windows without elevation.
-  Default is preview. -Apply writes only selected user Neovim files after backup.
-  Does NOT move or copy any personal .org notes.
-#>
+# Configure nvim-orgmode in user Neovim config. Preview by default.
 [CmdletBinding()]
 param(
   [Parameter(Mandatory=$true)][string]$OrgRoot,
@@ -12,60 +8,65 @@ param(
 )
 $ErrorActionPreference = 'Stop'
 $org = [System.IO.Path]::GetFullPath([Environment]::ExpandEnvironmentVariables($OrgRoot))
-if (-not (Test-Path -LiteralPath $org -PathType Container)) {
-  throw "Org folder not found: $org. No files changed."
-}
+if (-not (Test-Path -LiteralPath $org -PathType Container)) { throw "Org folder does not exist: $org" }
 $root = [System.IO.Path]::GetFullPath($ConfigRoot)
 $plugins = Join-Path $root 'lua\plugins'
 $cfg = Join-Path $root 'lua\config'
-$oldMain = Join-Path $plugins 'orgmode.lua'
-$oldUser = Join-Path $plugins 'user_orgmode.lua'
-$localConfig = Join-Path $cfg 'orgmode_windows.lua'
+if (-not (Test-Path -LiteralPath (Join-Path $root 'init.lua') -PathType Leaf)) { throw "No Neovim init.lua in $root" }
+$main = Join-Path $plugins 'orgmode.lua'
+$duplicate = Join-Path $plugins 'user_orgmode.lua'
+$local = Join-Path $cfg 'orgmode_windows.lua'
 $override = Join-Path $PSScriptRoot 'nvim\overrides\orgmode.lua'
-foreach ($f in @($oldMain,$oldUser,$override)) {
-  if (-not (Test-Path -LiteralPath $f -PathType Leaf)) { throw "Expected file missing: $f. No changes." }
-}
-$oldMainText = [System.IO.File]::ReadAllText($oldMain)
-$oldUserText = [System.IO.File]::ReadAllText($oldUser)
-if (-not $oldMainText.Contains('"nvim-orgmode/orgmode"') -or -not $oldUserText.Contains('"nvim-orgmode/orgmode"')) {
-  throw 'Unexpected original orgmode plugin files. Inspect before overwriting; nothing changed.'
-}
+if (-not (Test-Path -LiteralPath $override -PathType Leaf)) { throw "Missing template: $override" }
+$utf8 = New-Object System.Text.UTF8Encoding($false)
 $normalized = $org.Replace('\','/')
-if ($normalized.Contains('"') -or $normalized.Contains(']]')) {
-  throw 'Unsupported folder path characters for local Lua configuration. Nothing changed.'
-}
+if ($normalized.Contains(']]')) { throw 'Path contains unsupported Lua long string delimiter ]]' }
 $localText = 'return { root = [[' + $normalized + ']] }' + "`r`n"
-$overrideText = [System.IO.File]::ReadAllText($override)
-$emptyText = "return {} -- orgmode configured by orgmode.lua`r`n"
-if (Test-Path -LiteralPath $localConfig -PathType Leaf) {
-  $existing = [System.IO.File]::ReadAllText($localConfig)
-  if ($existing -ne $localText) {
-    throw "Existing local orgmode settings found: $localConfig. Review manually. No changes."
+$mainText = [System.IO.File]::ReadAllText($override)
+$duplicateText = "return {} -- orgmode configured by orgmode.lua`r`n"
+if (Test-Path -LiteralPath $main -PathType Leaf) {
+  $existing = [System.IO.File]::ReadAllText($main)
+  if ($existing -ne $mainText -and -not $existing.Contains('"nvim-orgmode/orgmode"')) {
+    throw "Unrecognized orgmode.lua: $main. Nothing changed."
   }
 }
-$orgCount = @(Get-ChildItem -LiteralPath $org -Filter '*.org' -File -Recurse -ErrorAction Stop).Count
-Write-Host ('Org folder: ' + $org)
-Write-Host ('Found .org files: ' + $orgCount)
-Write-Host ('[PLAN] Backup ' + $oldMain + ', ' + $oldUser)
-Write-Host ('[PLAN] Install merged plugin config into ' + $oldMain)
-Write-Host ('[PLAN] Disable duplicate plugin config in ' + $oldUser)
-Write-Host ('[PLAN] Set local paths in ' + $localConfig)
-Write-Host 'No personal notes will be copied or uploaded.'
+if (Test-Path -LiteralPath $duplicate -PathType Leaf) {
+  $existing = [System.IO.File]::ReadAllText($duplicate)
+  if ($existing -ne $duplicateText -and -not $existing.Contains('"nvim-orgmode/orgmode"')) {
+    throw "Unrecognized user_orgmode.lua: $duplicate. Nothing changed."
+  }
+}
+if (Test-Path -LiteralPath $local -PathType Leaf) {
+  $existing = [System.IO.File]::ReadAllText($local)
+  if ($existing -ne $localText) { throw "Local orgmode config already exists with different path: $local. Review manually." }
+}
+$planned = @()
+foreach ($entry in @(@{Path=$main;Content=$mainText},@{Path=$duplicate;Content=$duplicateText},@{Path=$local;Content=$localText})) {
+  $current = if (Test-Path -LiteralPath $entry.Path -PathType Leaf) { [System.IO.File]::ReadAllText($entry.Path) } else { $null }
+  if ($null -eq $current -or $current -cne $entry.Content) { $planned += $entry }
+}
+$orgCount = @(Get-ChildItem -LiteralPath $org -Filter '*.org' -File -Recurse).Count
+Write-Host ("Org folder: " + $org)
+Write-Host ("Found .org files: " + $orgCount)
+foreach ($entry in $planned) { Write-Host ("[PLAN] " + $entry.Path) }
+if ($planned.Count -eq 0) { Write-Host '[UNCHANGED] Orgmode Windows configuration already matches.' }
 if (-not $Apply) { Write-Host 'PREVIEW ONLY: no files changed.' -ForegroundColor Yellow; return }
+if ($planned.Count -eq 0) { Write-Host 'Nothing to apply.'; return }
 $stamp = Get-Date -Format 'yyyyMMdd-HHmmss'
 $backup = Join-Path (Split-Path $root -Parent) ("nvim-orgmode-backup-$stamp")
-if (Test-Path -LiteralPath $backup) { throw "Backup folder already exists: $backup" }
-New-Item -ItemType Directory -Path $backup -ErrorAction Stop | Out-Null
-Copy-Item -LiteralPath $oldMain,$oldUser -Destination $backup -ErrorAction Stop
-if (Test-Path -LiteralPath $localConfig -PathType Leaf) {
-  Copy-Item -LiteralPath $localConfig -Destination (Join-Path $backup 'orgmode_windows.lua') -ErrorAction Stop
+if (Test-Path -LiteralPath $backup) { throw "Backup exists: $backup" }
+New-Item -ItemType Directory -Path $backup | Out-Null
+foreach ($entry in $planned) {
+  if (Test-Path -LiteralPath $entry.Path -PathType Leaf) {
+    $destination = Join-Path $backup ([System.IO.Path]::GetFileName($entry.Path))
+    Copy-Item -LiteralPath $entry.Path -Destination $destination -ErrorAction Stop
+  }
 }
-$utf8 = New-Object System.Text.UTF8Encoding($false)
-[System.IO.File]::WriteAllText($oldMain, $overrideText, $utf8)
-[System.IO.File]::WriteAllText($oldUser, $emptyText, $utf8)
-[System.IO.File]::WriteAllText($localConfig, $localText, $utf8)
-Write-Host ('[OK] Backup: ' + $backup) -ForegroundColor Green
-Write-Host '[OK] Windows agenda configured. Validate in Neovim with :Org agenda' -ForegroundColor Green
-if ($orgCount -eq 0) {
-  Write-Warning 'No .org files were found. Copy your existing agenda files separately before expecting tasks.'
+New-Item -ItemType Directory -Path $plugins -Force | Out-Null
+New-Item -ItemType Directory -Path $cfg -Force | Out-Null
+foreach ($entry in $planned) {
+  [System.IO.File]::WriteAllText($entry.Path,$entry.Content,$utf8)
+  Write-Host ("[UPDATED] " + $entry.Path) -ForegroundColor Green
 }
+Write-Host ("[OK] Backup folder: " + $backup) -ForegroundColor Green
+Write-Host 'No .org notes were moved, copied, or uploaded. Validate :Org agenda in Neovim.'
