@@ -50,6 +50,19 @@ Una vez validado con TI, `-Apply -Component GCC`, `fzf` o `LazyGit` permite inst
 
 Gentle Shell funciona con Pi integrado. Gentle AI **nativo no funciona** en el equipo de referencia (`spawn EPERM` al validar `gentle-ai.exe`); requiere revision de TI. No deshabilitar Defender ni otros controles.
 
+## Actualizar Gentle Shell
+
+`update-gentle-shell.ps1` actualiza `gentle-pi` con el npm de usuario (Node portable), omitiendo `gentle-ai.exe` mediante `GENTLE_PI_SKIP_GENTLE_AI_INSTALL=1`. Sin `-Apply` solo muestra el plan.
+
+```powershell
+cd "$env:USERPROFILE\apps\dotfiles-windows"
+& .\windows\update-gentle-shell.ps1                          # preview
+& .\windows\update-gentle-shell.ps1 -Apply -PersistSkipFlag  # actualizar y guardar la variable de usuario
+& .\windows\update-gentle-shell.ps1 -Apply -Repair           # reinstalar si quedo a medias (EPERM)
+```
+
+Cerrar antes toda ventana de gentle-shell o pi. `-Version 4.2.0` fija una version concreta. No requiere administrador: el script se detiene si el prefijo de npm esta fuera del perfil de usuario.
+
 ## Seguridad
 
 Repositorio **publico**. No agregar credenciales, tokens, `auth.json`, archivos `.env`, datos corporativos ni contenido del vault Obsidian.
