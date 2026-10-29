@@ -1,0 +1,3 @@
+# Engram Windows
+
+Probado en Windows Enterprise: Gentle Shell 4.5.1 con Pi 1.4.0 empaquetado, Engram 3.6.0 precompilado, gentle-engram 0.4.1. Memorias locales en ~/.engram con separacion logica por repositorio Git. Tarea Engram - Memoria Local: inicio de sesion, retardo 30s, usuario sin elevacion, ejecuta engram.exe serve, escucha 127.0.0.1:7437. Ejecucion manual de tarea verificada; inicio automatico tras nueva sesion aun pendiente. Gentle AI nativo falla con spawn EPERM. No deshabilitar medidas de seguridad. El instalador windows/install.ps1 aun solo cubre GCC, fzf, LazyGit.
