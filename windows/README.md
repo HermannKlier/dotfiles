@@ -72,3 +72,25 @@ Repositorio **publico**. No agregar credenciales, tokens, `auth.json`, archivos 
 Se clono la rama `setup/windows-enterprise`, se verifico sintaxis de `install.ps1` con el parser de PowerShell (sin errores) y se ejecuto sin `-Apply`: WinLibs GCC, fzf y LazyGit aparecieron como `[PRESENT]`, sin cambios. Despues, `verify.ps1` informo **11/11 herramientas [OK]** y detecto `%LOCALAPPDATA%\nvim\init.lua`. Herramientas: Git 2.53.0.windows.2, Node.js 24.17.0, npm 11.13.0, Go 1.27.2, Neovim 0.12.4, ripgrep 15.2.0, fd 10.5.0, GCC 16.2.0, fzf 0.74.4, LazyGit 0.65.1 y Gentle Shell 4.1.0.
 
 Este resultado confirma la deteccion de herramientas **ya instaladas**, no la restauracion desde cero ni la instalacion mediante `-Apply`. El siguiente paso es diagnosticar y respaldar GentlemanNvim antes de automatizar copias o reemplazos.
+
+
+## Nuevo flujo asistido (rama de trabajo, aun sin fusionar)
+
+- `bootstrap.ps1` es el punto de entrada; en su modo normal solo consulta, sin instalar nada.
+- `setup-engram.ps1` prepara el Engram precompilado y la extension de Gentle Shell, con una tarea programada de inicio de sesion. Exige ZIP oficial y SHA-256 validado cuando el ejecutable no existe.
+- `ENGRAM_STATUS.md` detalla las versiones probadas, fallos encontrados y limitaciones.
+- Prueba inicial, desde PowerShell, sin modificar el equipo:
+
+```powershell
+& .\windows\bootstrap.ps1 -Component All
+```
+
+Para instalacion autorizada, ejecutar por componentes y revisar cada plan. Antes de `-Apply`, verificar procedencia y SHA-256 del ZIP de Engram; confirmar que Gentle Shell empaquetado se encuentra en `%LOCALAPPDATA%\gentle-shell\bin`.
+
+```powershell
+& .\windows\bootstrap.ps1 -Component Engram -EngramZip "$HOME\Downloads\engram_3.6.0_windows_amd64.zip" -EngramSha256 "<SHA256_VALIDADO>"
+# Solo tras validar el plan y la politica de TI:
+& .\windows\bootstrap.ps1 -Component Engram -Apply -EngramZip "$HOME\Downloads\engram_3.6.0_windows_amd64.zip" -EngramSha256 "<SHA256_VALIDADO>"
+```
+
+**Pendiente:** probar sintaxis y previsualizacion en Windows, verificar arranque automatico tras reinicio, revisar las vulnerabilidades npm reportadas y completar instaladores con manifiestos aprobados para Git, Node, Go, Neovim y Gentle Shell empaquetado. El metodo antiguo `update-gentle-shell.ps1` corresponde a npm global y **no** es el actualizador de la instalacion empaquetada 4.5.1.
