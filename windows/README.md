@@ -94,3 +94,14 @@ Para instalacion autorizada, ejecutar por componentes y revisar cada plan. Antes
 ```
 
 **Pendiente:** probar sintaxis y previsualizacion en Windows, verificar arranque automatico tras reinicio, revisar las vulnerabilidades npm reportadas y completar instaladores con manifiestos aprobados para Git, Node, Go, Neovim y Gentle Shell empaquetado. El metodo antiguo `update-gentle-shell.ps1` corresponde a npm global y **no** es el actualizador de la instalacion empaquetada 4.5.1.
+
+
+## Reemplazo o avería del equipo corporativo
+
+Este repositorio se conserva como guía de **recuperación del entorno en una futura computadora**, no como compromiso de probar hoy en una segunda PC. La instalación actual se verificó en Windows Enterprise sin privilegios de administrador: Gentle Shell 4.5.1 con Pi 1.4.0, Engram 3.6.0, servidor local en 127.0.0.1:7437, arranque automático oculto mediante tarea programada con WScript y recuperación de la observación #1 desde Gentle Shell después de reiniciar. Véase `ENGRAM_STATUS.md`.
+
+**Al recibir un equipo nuevo:** comprobar primero las políticas de seguridad y disponibilidad de PowerShell, Node, Git, Go, Neovim y los ejecutables precompilados; revisar la versión fijada y los artefactos de descarga; ejecutar los scripts de este repositorio en modo lectura/plan antes de aplicar cambios; restaurar únicamente respaldos autorizados; verificar manualmente el arranque sin consola, el puerto 7437, la integración mem_* y la recuperación de una observación de prueba. Las operaciones dependientes del equipo nuevo **no están validadas**; no desactivar controles empresariales para forzar la instalación.
+
+**Datos no incluidos en GitHub:** las memorias SQLite locales de Engram (bajo `%USERPROFILE%\.engram` de manera predeterminada), los repositorios y archivos de trabajo, las credenciales, las sesiones y cualquier información corporativa. Antes de migrar, obtener respaldos aprobados por TI, determinar una ubicación corporativa autorizada y verificar integridad y restauración con el servidor detenido. No subir bases de memoria, secretos ni archivos de trabajo al repositorio de scripts. Si el equipo se avería sin respaldo previo, estos datos pueden no ser recuperables.
+
+**Estado de cierre:** entorno actual **VALIDADO**; procedimiento de recuperación **DOCUMENTADO, PENDIENTE DE VALIDACIÓN EN EQUIPO FUTURO**. No se requiere una segunda computadora para cerrar esta etapa.
