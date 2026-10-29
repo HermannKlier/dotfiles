@@ -17,8 +17,8 @@ $ErrorActionPreference = 'Stop'
 $exe = Join-Path $HOME 'apps\engram\engram.exe'
 $shell = Join-Path $env:LOCALAPPDATA 'gentle-shell\bin\gentle-shell.cmd'
 $name = 'Engram - Memoria Local'
-$launcher = Join-Path (Split-Path $exe) 'iniciar-oculto.ps1'
-$expectedArgs = '-NoProfile -NonInteractive -WindowStyle Hidden -File "' + $launcher + '"'
+$launcher = Join-Path (Split-Path $exe) 'iniciar-oculto.vbs'
+$expectedArgs = '"' + $launcher + '"'
 $oldShortcut = Join-Path ([Environment]::GetFolderPath('Startup')) 'Engram Server.lnk'
 Write-Host "Gentle Shell: $shell"
 Write-Host "Engram: $exe"
@@ -41,7 +41,7 @@ if ($task) {
   Write-Host '[PRESENT] Tarea de Engram existente; se conserva.'
 } else { Write-Host '[PLAN] Crear tarea al iniciar sesion, retraso 30s, usuario limitado.' }
 Write-Host '[PLAN] Instalar extension npm:gentle-engram@0.4.1 en Gentle Shell.'
-Write-Host '[PLAN] Crear lanzador PowerShell oculto en carpeta de Engram.'
+Write-Host '[PLAN] Crear lanzador WScript oculto en carpeta de Engram.'
 if (Test-Path -LiteralPath $oldShortcut) { Write-Host '[PLAN] Retirar Startup shortcut antiguo despues de validar tarea.' }
 if (-not $Apply) { Write-Host '[PREVIEW] Sin cambios.'; return }
 if ($missingShell) { throw 'No se puede aplicar: falta Gentle Shell empaquetado.' }
@@ -60,14 +60,13 @@ if ($LASTEXITCODE -ne 0) { throw 'Engram no ejecuto version.' }
 & $shell install npm:gentle-engram@0.4.1
 if ($LASTEXITCODE -ne 0) { throw 'Instalacion de extension fallo.' }
 if (-not (Test-Path -LiteralPath $launcher)) {
-  @'
-$ErrorActionPreference = "Stop"
-& "$HOME\apps\engram\engram.exe" serve
-'@ | Set-Content -LiteralPath $launcher -Encoding UTF8
+  $vbsLine1 = 'Set shell = CreateObject("WScript.Shell")'
+  $vbsLine2 = 'shell.Run Chr(34) & "' + $exe + '" & Chr(34) & " serve", 0, False'
+  @($vbsLine1, $vbsLine2) | Set-Content -LiteralPath $launcher -Encoding ASCII
 }
 if (-not $task) {
   $who = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name
-  $action = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument $expectedArgs -WorkingDirectory (Split-Path $exe)
+  $action = New-ScheduledTaskAction -Execute (Join-Path $env:WINDIR 'System32\wscript.exe') -Argument $expectedArgs -WorkingDirectory (Split-Path $exe)
   $trigger = New-ScheduledTaskTrigger -AtLogOn -User $who
   $trigger.Delay = 'PT30S'
   $principal = New-ScheduledTaskPrincipal -UserId $who -LogonType Interactive -RunLevel Limited
