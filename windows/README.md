@@ -116,3 +116,16 @@ En %USERPROFILE%/.wezterm.lua se configuró `config.default_prog` con la ruta lo
 Se verificó Gentle Shell con Pi dentro de Herdr, y mem_search recuperó exitosamente la observación 1 del proyecto RBI desde Engram, solo lectura. Una incidencia de texto desalineado en Herdr se corrigió con Clear-Host, pero se debe observar si vuelve a ocurrir. El procedimiento no se ha probado todavía en otro equipo. Gentle AI nativo permanece pendiente.
 
 **Revisión necesaria antes de reutilizar:** el archivo windows/setup-engram.ps1 muestra secciones duplicadas y posiblemente dañadas. No ejecutar con -Apply sin corregirlo y probar su sintaxis y lógica. La instalación manual probada de Engram no valida automáticamente dicho script.
+
+
+## Gentle AI 4.2.0 — BLOQUEADO POR SEGURIDAD CORPORATIVA (29/10/2026)
+
+En Windows Enterprise, usuario sin permisos de administrador, Go 1.27.2 (`windows/amd64`), se ejecutó:
+
+```powershell
+go install github.com/gentleman-programming/gentle-ai/v4/cmd/gentle-ai@v4.2.0
+```
+
+La compilación terminó sin errores y creó `%USERPROFILE%\go\bin\gentle-ai.exe` (27 154 432 bytes). `Get-AuthenticodeSignature` devolvió `NotSigned`. Al ejecutar `& "$HOME\go\bin\gentle-ai.exe" --version`, PowerShell informó `Program 'gentle-ai.exe' failed to run: Access is denied` (`ApplicationFailedException`, `NativeCommandFailed`) y Windows Security pidió credenciales de administrador. El usuario no las tiene. **Estado: BLOCKED_BY_CORPORATE_POLICY (bloqueo observado; la regla exacta no está determinada)**. No se ejecutó `gentle-ai install/setup/sync`; no se modificó la instalación funcional de Gentle Shell, Pi, Engram, Herdr y WezTerm.
+
+Para un equipo futuro, verificar con TI si permite el ejecutable y el procedimiento; **no** desactivar ni eludir controles corporativos. No repetir compilaciones como supuesto remedio: compilar fue posible, ejecutar el resultado no. La distribución precompilada de Engram sí se ejecutó en esta PC, pero ello no implica que otros binarios sean admitidos. Gentle AI independiente no es imprescindible para utilizar el Gentle Shell actualmente funcional.
