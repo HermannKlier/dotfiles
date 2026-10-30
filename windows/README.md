@@ -105,3 +105,14 @@ Este repositorio se conserva como guía de **recuperación del entorno en una fu
 **Datos no incluidos en GitHub:** las memorias SQLite locales de Engram (bajo `%USERPROFILE%\.engram` de manera predeterminada), los repositorios y archivos de trabajo, las credenciales, las sesiones y cualquier información corporativa. Antes de migrar, obtener respaldos aprobados por TI, determinar una ubicación corporativa autorizada y verificar integridad y restauración con el servidor detenido. No subir bases de memoria, secretos ni archivos de trabajo al repositorio de scripts. Si el equipo se avería sin respaldo previo, estos datos pueden no ser recuperables.
 
 **Estado de cierre:** entorno actual **VALIDADO**; procedimiento de recuperación **DOCUMENTADO, PENDIENTE DE VALIDACIÓN EN EQUIPO FUTURO**. No se requiere una segunda computadora para cerrar esta etapa.
+
+
+## WezTerm + Herdr (validado en la computadora actual)
+
+Se instaló WezTerm 20240203-110809-5046fc22 (ZIP portátil) en la carpeta de usuario, y Herdr 0.9.5 (ZIP con ConPTY) sin permisos administrativos. El archivo de configuración de Herdr de Gentleman.Dots se aplicó a %APPDATA%/herdr/config.toml y pasó `herdr.exe config check` con resultado `config: ok`.
+
+En %USERPROFILE%/.wezterm.lua se configuró `config.default_prog` con la ruta local de `herdr.exe`, tema OneDark, fuente 12 y atajo Ctrl+V para pegar desde el portapapeles. El usuario confirmó que WezTerm abre Herdr automáticamente y que Ctrl+V pega. No se modificó el perfil PowerShell de OneDrive.
+
+Se verificó Gentle Shell con Pi dentro de Herdr, y mem_search recuperó exitosamente la observación 1 del proyecto RBI desde Engram, solo lectura. Una incidencia de texto desalineado en Herdr se corrigió con Clear-Host, pero se debe observar si vuelve a ocurrir. El procedimiento no se ha probado todavía en otro equipo. Gentle AI nativo permanece pendiente.
+
+**Revisión necesaria antes de reutilizar:** el archivo windows/setup-engram.ps1 muestra secciones duplicadas y posiblemente dañadas. No ejecutar con -Apply sin corregirlo y probar su sintaxis y lógica. La instalación manual probada de Engram no valida automáticamente dicho script.
