@@ -93,7 +93,7 @@ Para instalacion autorizada, ejecutar por componentes y revisar cada plan. Antes
 & .\windows\bootstrap.ps1 -Component Engram -Apply -EngramZip "$HOME\Downloads\engram_3.6.0_windows_amd64.zip" -EngramSha256 "<SHA256_VALIDADO>"
 ```
 
-**Pendiente:** probar sintaxis y previsualizacion en Windows, verificar arranque automatico tras reinicio, revisar las vulnerabilidades npm reportadas y completar instaladores con manifiestos aprobados para Git, Node, Go, Neovim y Gentle Shell empaquetado. El metodo antiguo `update-gentle-shell.ps1` corresponde a npm global y **no** es el actualizador de la instalacion empaquetada 4.5.1.
+**Pendiente:** probar sintaxis y previsualizacion del script nuevo en Windows; el arranque automatico manual con WScript ya se valido tras reinicio. Revisar las vulnerabilidades npm reportadas y completar instaladores con manifiestos aprobados para Git, Node, Go, Neovim y Gentle Shell empaquetado. El metodo antiguo `update-gentle-shell.ps1` corresponde a npm global y **no** es el actualizador de la instalacion empaquetada 4.5.1.
 
 
 ## Reemplazo o avería del equipo corporativo
@@ -111,11 +111,11 @@ Este repositorio se conserva como guía de **recuperación del entorno en una fu
 
 Se instaló WezTerm 20240203-110809-5046fc22 (ZIP portátil) en la carpeta de usuario, y Herdr 0.9.5 (ZIP con ConPTY) sin permisos administrativos. El archivo de configuración de Herdr de Gentleman.Dots se aplicó a %APPDATA%/herdr/config.toml y pasó `herdr.exe config check` con resultado `config: ok`.
 
-En %USERPROFILE%/.wezterm.lua se configuró `config.default_prog` con la ruta local de `herdr.exe`, tema OneDark, fuente 12 y atajo Ctrl+V para pegar desde el portapapeles. El usuario confirmó que WezTerm abre Herdr automáticamente y que Ctrl+V pega. No se modificó el perfil PowerShell de OneDrive.
+En %USERPROFILE%/.wezterm.lua se configuró `config.default_prog` con la ruta local de `herdr.exe`, tema OneDark, fuente 11 (ajustada para obtener al menos 140 columnas y mostrar el panel de estado derecho de Gentle Shell) y atajo Ctrl+V para pegar desde el portapapeles. El usuario confirmó que WezTerm abre Herdr automáticamente y que Ctrl+V pega. No se modificó el perfil PowerShell de OneDrive.
 
 Se verificó Gentle Shell con Pi dentro de Herdr, y mem_search recuperó exitosamente la observación 1 del proyecto RBI desde Engram, solo lectura. Una incidencia de texto desalineado en Herdr se corrigió con Clear-Host, pero se debe observar si vuelve a ocurrir. El procedimiento no se ha probado todavía en otro equipo. Gentle AI nativo permanece pendiente.
 
-**Revisión necesaria antes de reutilizar:** el archivo windows/setup-engram.ps1 muestra secciones duplicadas y posiblemente dañadas. No ejecutar con -Apply sin corregirlo y probar su sintaxis y lógica. La instalación manual probada de Engram no valida automáticamente dicho script.
+**Revisión de instalador:** se sustituyó windows/setup-engram.ps1 porque contenía bloques duplicados y sintaxis dañada. La nueva versión utiliza vista previa por defecto, conserva tareas existentes, valida SHA-256 de ZIP nuevo, respeta el lanzador oculto WScript y contempla gentle-engram@0.4.2. **Pendiente de validar sintaxis y ejecución de la vista previa en Windows real; no ejecutar con -Apply hasta completar esa verificación.** La instalación manual probada de Engram no valida automáticamente dicho script.
 
 
 ## Gentle AI 4.2.0 — BLOQUEADO POR SEGURIDAD CORPORATIVA (29/10/2026)
