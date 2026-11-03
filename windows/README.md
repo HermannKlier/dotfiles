@@ -143,4 +143,11 @@ Ejemplos de **vista previa** (sin instalaciones):
 & .\windows\bootstrap.ps1 -Component Engram
 ```
 
-**Limitaciones:** solo `setup-engram.ps1` fue comprobado por el usuario con el parser PowerShell y ejecución de preview sin errores. **La nueva revisión de `bootstrap.ps1` todavía necesita análisis de sintaxis y preview en la PC Windows.** No se ha ejecutado ni validado la instalación completa mediante `-Apply` en equipo nuevo. No ejecutar `-Apply` sin revisión adicional y autorización corporativa. La copia temporal del script de prueba `%TEMP%\verificar-setup-engram.ps1` se puede borrar sin afectar la instalación de Engram.
+**Limitaciones:** solo `setup-engram.ps1` fue comprobado por el usuario con el parser PowerShell y ejecución de preview sin errores. **La nueva revisión de `bootstrap.ps1` ya superó el análisis de sintaxis y la ejecución de preview en la PC Windows (2026-11-02).** No se ha ejecutado ni validado la instalación completa mediante `-Apply` en equipo nuevo. No ejecutar `-Apply` sin revisión adicional y autorización corporativa. La copia temporal del script de prueba `%TEMP%\verificar-setup-engram.ps1` se puede borrar sin afectar la instalación de Engram.
+
+
+### Resultado real de la vista previa integral (2026-11-02)
+
+El usuario clonó la rama del PR en `%TEMP%\dotfiles-windows-validacion` y ejecutó `& "$repo\windows\bootstrap.ps1" -Component All`, **sin `-Apply`**. Reportó 11/11 herramientas `[OK]` (Git 2.53.0, Node 24.17.0, npm 11.13.0, Go 1.27.2, Neovim 0.12.4, ripgrep 15.2.0, fd 10.5.0, GCC 16.2.0, fzf 0.74.4, LazyGit 0.65.1, Gentle Shell 4.5.1), además de configuración Neovim detectada. `install.ps1` reconoció los tres binarios como `[PRESENT]`. `setup-engram.ps1` reconoció Engram, lanzador WScript, tarea programada y `npm:gentle-engram@0.4.2` como `[PRESENT]`. Finalizó con `[PREVIEW] Bootstrap terminado sin realizar instalaciones.` La sintaxis del archivo `bootstrap.ps1` también había sido validada previamente por el parser PowerShell sin errores.
+
+**Alcance:** se probó el modo lectura/preview en la PC actual, no el camino `-Apply` ni una restauración completa en una computadora nueva. Las copias temporales pueden borrarse después de la prueba. Conservar el PR para revisión/merge solo de acuerdo con la evaluación de riesgos restante.
