@@ -93,7 +93,7 @@ Para instalacion autorizada, ejecutar por componentes y revisar cada plan. Antes
 & .\windows\bootstrap.ps1 -Component Engram -Apply -EngramZip "$HOME\Downloads\engram_3.6.0_windows_amd64.zip" -EngramSha256 "<SHA256_VALIDADO>"
 ```
 
-**Pendiente:** probar sintaxis y previsualizacion del script nuevo en Windows; el arranque automatico manual con WScript ya se valido tras reinicio. Revisar las vulnerabilidades npm reportadas y completar instaladores con manifiestos aprobados para Git, Node, Go, Neovim y Gentle Shell empaquetado. El metodo antiguo `update-gentle-shell.ps1` corresponde a npm global y **no** es el actualizador de la instalacion empaquetada 4.5.1.
+**Validado en la PC de referencia:** sintaxis de setup-engram.ps1 analizada con Parser::ParseFile sin errores; ejecución sin -Apply finalizó reconociendo Engram existente, lanzador WScript, tarea programada y npm:gentle-engram@0.4.2, terminando en [PREVIEW] Ningun archivo, paquete ni tarea fue modificado. El arranque automático manual con WScript también se validó tras reinicio. **Pendiente:** ejecución de instalación desde cero en otro equipo y revisión de las vulnerabilidades npm reportadas. Revisar las vulnerabilidades npm reportadas y completar instaladores con manifiestos aprobados para Git, Node, Go, Neovim y Gentle Shell empaquetado. El metodo antiguo `update-gentle-shell.ps1` corresponde a npm global y **no** es el actualizador de la instalacion empaquetada 4.5.1.
 
 
 ## Reemplazo o avería del equipo corporativo
@@ -115,7 +115,7 @@ En %USERPROFILE%/.wezterm.lua se configuró `config.default_prog` con la ruta lo
 
 Se verificó Gentle Shell con Pi dentro de Herdr, y mem_search recuperó exitosamente la observación 1 del proyecto RBI desde Engram, solo lectura. Una incidencia de texto desalineado en Herdr se corrigió con Clear-Host, pero se debe observar si vuelve a ocurrir. El procedimiento no se ha probado todavía en otro equipo. Gentle AI nativo permanece pendiente.
 
-**Revisión de instalador:** se sustituyó windows/setup-engram.ps1 porque contenía bloques duplicados y sintaxis dañada. La nueva versión utiliza vista previa por defecto, conserva tareas existentes, valida SHA-256 de ZIP nuevo, respeta el lanzador oculto WScript y contempla gentle-engram@0.4.2. **Pendiente de validar sintaxis y ejecución de la vista previa en Windows real; no ejecutar con -Apply hasta completar esa verificación.** La instalación manual probada de Engram no valida automáticamente dicho script.
+**Revisión de instalador:** se sustituyó windows/setup-engram.ps1 porque contenía bloques duplicados y sintaxis dañada. La nueva versión utiliza vista previa por defecto, conserva tareas existentes, valida SHA-256 de ZIP nuevo, respeta el lanzador oculto WScript y contempla gentle-engram@0.4.2. **Sintaxis y ejecución de vista previa validadas en Windows real.** La ruta -Apply y la instalación desde cero siguen sin probarse; ejecutar solo cuando se necesite y con controles TI. La instalación manual probada de Engram no valida automáticamente dicho script.
 
 
 ## Gentle AI 4.2.0 — BLOQUEADO POR SEGURIDAD CORPORATIVA (29/10/2026)
