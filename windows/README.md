@@ -14,7 +14,7 @@ Guia para recuperar el entorno en Windows 11 Enterprise sin permisos de administ
 Desde PowerShell, tras clonar **esta rama** en una carpeta separada:
 
 ```powershell
-git clone --branch setup/windows-enterprise --single-branch https://github.com/HermannKlier/dotfiles.git "$env:USERPROFILE\apps\dotfiles-windows"
+git clone --branch feat/windows-gentle-shell-engram-bootstrap --single-branch https://github.com/HermannKlier/dotfiles.git "$env:USERPROFILE\apps\dotfiles-windows"
 ```
 
 Primero revisar la sintaxis sin ejecutar el instalador:
@@ -129,3 +129,18 @@ go install github.com/gentleman-programming/gentle-ai/v4/cmd/gentle-ai@v4.2.0
 La compilación terminó sin errores y creó `%USERPROFILE%\go\bin\gentle-ai.exe` (27 154 432 bytes). `Get-AuthenticodeSignature` devolvió `NotSigned`. Al ejecutar `& "$HOME\go\bin\gentle-ai.exe" --version`, PowerShell informó `Program 'gentle-ai.exe' failed to run: Access is denied` (`ApplicationFailedException`, `NativeCommandFailed`) y Windows Security pidió credenciales de administrador. El usuario no las tiene. **Estado: BLOCKED_BY_CORPORATE_POLICY (bloqueo observado; la regla exacta no está determinada)**. No se ejecutó `gentle-ai install/setup/sync`; no se modificó la instalación funcional de Gentle Shell, Pi, Engram, Herdr y WezTerm.
 
 Para un equipo futuro, verificar con TI si permite el ejecutable y el procedimiento; **no** desactivar ni eludir controles corporativos. No repetir compilaciones como supuesto remedio: compilar fue posible, ejecutar el resultado no. La distribución precompilada de Engram sí se ejecutó en esta PC, pero ello no implica que otros binarios sean admitidos. Gentle AI independiente no es imprescindible para utilizar el Gentle Shell actualmente funcional.
+
+
+## Revisión de bootstrap y dependencias (2026-11-02)
+
+Se revisaron `bootstrap.ps1`, `install.ps1`, `verify.ps1`, `versions.json` y `setup-engram.ps1`. Se actualizó `bootstrap.ps1` para exigir componente explícito al usar `-Apply`: no permite `-Apply -Component All`, y para herramientas tampoco `-Apply -Component Tools` sin seleccionar `-ToolComponent GCC`, `fzf` o `LazyGit`. Los componentes instalables del bootstrap actual son únicamente esas tres herramientas y Engram; Git, Node, Go, Neovim, WezTerm, Herdr y Gentle Shell empaquetado siguen teniendo instalación separada.
+
+Ejemplos de **vista previa** (sin instalaciones):
+
+```powershell
+& .\windows\bootstrap.ps1 -Component All
+& .\windows\bootstrap.ps1 -Component Tools -ToolComponent fzf
+& .\windows\bootstrap.ps1 -Component Engram
+```
+
+**Limitaciones:** solo `setup-engram.ps1` fue comprobado por el usuario con el parser PowerShell y ejecución de preview sin errores. **La nueva revisión de `bootstrap.ps1` todavía necesita análisis de sintaxis y preview en la PC Windows.** No se ha ejecutado ni validado la instalación completa mediante `-Apply` en equipo nuevo. No ejecutar `-Apply` sin revisión adicional y autorización corporativa. La copia temporal del script de prueba `%TEMP%\verificar-setup-engram.ps1` se puede borrar sin afectar la instalación de Engram.
