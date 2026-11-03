@@ -52,16 +52,7 @@ Gentle Shell funciona con Pi integrado. Gentle AI **nativo no funciona** en el e
 
 ## Actualizar Gentle Shell
 
-`update-gentle-shell.ps1` actualiza `gentle-pi` con el npm de usuario (Node portable), omitiendo `gentle-ai.exe` mediante `GENTLE_PI_SKIP_GENTLE_AI_INSTALL=1`. Sin `-Apply` solo muestra el plan.
-
-```powershell
-cd "$env:USERPROFILE\apps\dotfiles-windows"
-& .\windows\update-gentle-shell.ps1                          # preview
-& .\windows\update-gentle-shell.ps1 -Apply -PersistSkipFlag  # actualizar y guardar la variable de usuario
-& .\windows\update-gentle-shell.ps1 -Apply -Repair           # reinstalar si quedo a medias (EPERM)
-```
-
-Cerrar antes toda ventana de gentle-shell o pi. `-Version 4.2.0` fija una version concreta. No requiere administrador: el script se detiene si el prefijo de npm esta fuera del perfil de usuario.
+**Instalacion actual:** Gentle Shell 4.5.1 con Pi 1.4.0 empaquetado en `%LOCALAPPDATA%\\gentle-shell\\bin`. El script heredado `update-gentle-shell.ps1` administra una instalacion **npm global anterior** y **no debe ejecutarse para actualizar la instalacion empaquetada actual**. En una migracion verificar primero el metodo oficial de instalacion y la politica de TI; no forzar `GENTLE_PI_SKIP_GENTLE_AI_INSTALL` ni ejecutar acciones de reparacion del metodo antiguo. Gentle AI nativo permanece bloqueado por controles corporativos.
 
 ## Seguridad
 
@@ -93,7 +84,7 @@ Para instalacion autorizada, ejecutar por componentes y revisar cada plan. Antes
 & .\windows\bootstrap.ps1 -Component Engram -Apply -EngramZip "$HOME\Downloads\engram_3.6.0_windows_amd64.zip" -EngramSha256 "<SHA256_VALIDADO>"
 ```
 
-**Validado en la PC de referencia:** sintaxis de setup-engram.ps1 analizada con Parser::ParseFile sin errores; ejecución sin -Apply finalizó reconociendo Engram existente, lanzador WScript, tarea programada y npm:gentle-engram@0.4.2, terminando en [PREVIEW] Ningun archivo, paquete ni tarea fue modificado. El arranque automático manual con WScript también se validó tras reinicio. **Pendiente:** ejecución de instalación desde cero en otro equipo y revisión de las vulnerabilidades npm reportadas. Revisar las vulnerabilidades npm reportadas y completar instaladores con manifiestos aprobados para Git, Node, Go, Neovim y Gentle Shell empaquetado. El metodo antiguo `update-gentle-shell.ps1` corresponde a npm global y **no** es el actualizador de la instalacion empaquetada 4.5.1.
+**Validado en la PC de referencia:** sintaxis de setup-engram.ps1 analizada con Parser::ParseFile sin errores; ejecución sin -Apply finalizó reconociendo Engram existente, lanzador WScript, tarea programada y npm:gentle-engram@0.4.2, terminando en [PREVIEW] Ningun archivo, paquete ni tarea fue modificado. El arranque automático manual con WScript también se validó tras reinicio. **Pendiente:** ejecución de instalación desde cero en otro equipo y revisión de las vulnerabilidades npm reportadas. Completar instaladores con manifiestos aprobados para Git, Node, Go, Neovim y Gentle Shell empaquetado. El metodo antiguo `update-gentle-shell.ps1` corresponde a npm global y **no** es el actualizador de la instalacion empaquetada 4.5.1.
 
 
 ## Reemplazo o avería del equipo corporativo
@@ -143,7 +134,7 @@ Ejemplos de **vista previa** (sin instalaciones):
 & .\windows\bootstrap.ps1 -Component Engram
 ```
 
-**Limitaciones:** solo `setup-engram.ps1` fue comprobado por el usuario con el parser PowerShell y ejecución de preview sin errores. **La nueva revisión de `bootstrap.ps1` ya superó el análisis de sintaxis y la ejecución de preview en la PC Windows (2026-11-02).** No se ha ejecutado ni validado la instalación completa mediante `-Apply` en equipo nuevo. No ejecutar `-Apply` sin revisión adicional y autorización corporativa. La copia temporal del script de prueba `%TEMP%\verificar-setup-engram.ps1` se puede borrar sin afectar la instalación de Engram.
+**Limitaciones:** `setup-engram.ps1` y `bootstrap.ps1` fueron comprobados con el parser PowerShell y mediante sus vistas previas sin errores. **La nueva revisión de `bootstrap.ps1` ya superó el análisis de sintaxis y la ejecución de preview en la PC Windows (2026-11-02).** No se ha ejecutado ni validado la instalación completa mediante `-Apply` en equipo nuevo. No ejecutar `-Apply` sin revisión adicional y autorización corporativa. La copia temporal del script de prueba `%TEMP%\verificar-setup-engram.ps1` se puede borrar sin afectar la instalación de Engram.
 
 
 ### Resultado real de la vista previa integral (2026-11-02)
