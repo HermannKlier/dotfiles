@@ -14,7 +14,7 @@ Guia para recuperar el entorno en Windows 11 Enterprise sin permisos de administ
 Desde PowerShell, tras clonar **esta rama** en una carpeta separada:
 
 ```powershell
-git clone --branch setup/windows-enterprise --single-branch https://github.com/HermannKlier/dotfiles.git "$env:USERPROFILE\apps\dotfiles-windows"
+git clone --branch feat/windows-gentle-shell-engram-bootstrap --single-branch https://github.com/HermannKlier/dotfiles.git "$env:USERPROFILE\apps\dotfiles-windows"
 ```
 
 Primero revisar la sintaxis sin ejecutar el instalador:
@@ -52,16 +52,7 @@ Gentle Shell funciona con Pi integrado. Gentle AI **nativo no funciona** en el e
 
 ## Actualizar Gentle Shell
 
-`update-gentle-shell.ps1` actualiza `gentle-pi` con el npm de usuario (Node portable), omitiendo `gentle-ai.exe` mediante `GENTLE_PI_SKIP_GENTLE_AI_INSTALL=1`. Sin `-Apply` solo muestra el plan.
-
-```powershell
-cd "$env:USERPROFILE\apps\dotfiles-windows"
-& .\windows\update-gentle-shell.ps1                          # preview
-& .\windows\update-gentle-shell.ps1 -Apply -PersistSkipFlag  # actualizar y guardar la variable de usuario
-& .\windows\update-gentle-shell.ps1 -Apply -Repair           # reinstalar si quedo a medias (EPERM)
-```
-
-Cerrar antes toda ventana de gentle-shell o pi. `-Version 4.2.0` fija una version concreta. No requiere administrador: el script se detiene si el prefijo de npm esta fuera del perfil de usuario.
+**Instalacion actual:** Gentle Shell 4.5.1 con Pi 1.4.0 empaquetado en `%LOCALAPPDATA%\\gentle-shell\\bin`. El script heredado `update-gentle-shell.ps1` administra una instalacion **npm global anterior** y **no debe ejecutarse para actualizar la instalacion empaquetada actual**. En una migracion verificar primero el metodo oficial de instalacion y la politica de TI; no forzar `GENTLE_PI_SKIP_GENTLE_AI_INSTALL` ni ejecutar acciones de reparacion del metodo antiguo. Gentle AI nativo permanece bloqueado por controles corporativos.
 
 ## Seguridad
 
@@ -72,3 +63,82 @@ Repositorio **publico**. No agregar credenciales, tokens, `auth.json`, archivos 
 Se clono la rama `setup/windows-enterprise`, se verifico sintaxis de `install.ps1` con el parser de PowerShell (sin errores) y se ejecuto sin `-Apply`: WinLibs GCC, fzf y LazyGit aparecieron como `[PRESENT]`, sin cambios. Despues, `verify.ps1` informo **11/11 herramientas [OK]** y detecto `%LOCALAPPDATA%\nvim\init.lua`. Herramientas: Git 2.53.0.windows.2, Node.js 24.17.0, npm 11.13.0, Go 1.27.2, Neovim 0.12.4, ripgrep 15.2.0, fd 10.5.0, GCC 16.2.0, fzf 0.74.4, LazyGit 0.65.1 y Gentle Shell 4.1.0.
 
 Este resultado confirma la deteccion de herramientas **ya instaladas**, no la restauracion desde cero ni la instalacion mediante `-Apply`. El siguiente paso es diagnosticar y respaldar GentlemanNvim antes de automatizar copias o reemplazos.
+
+
+## Nuevo flujo asistido (rama de trabajo, aun sin fusionar)
+
+- `bootstrap.ps1` es el punto de entrada; en su modo normal solo consulta, sin instalar nada.
+- `setup-engram.ps1` prepara el Engram precompilado y la extension de Gentle Shell, con una tarea programada de inicio de sesion. Exige ZIP oficial y SHA-256 validado cuando el ejecutable no existe.
+- `ENGRAM_STATUS.md` detalla las versiones probadas, fallos encontrados y limitaciones.
+- Prueba inicial, desde PowerShell, sin modificar el equipo:
+
+```powershell
+& .\windows\bootstrap.ps1 -Component All
+```
+
+Para instalacion autorizada, ejecutar por componentes y revisar cada plan. Antes de `-Apply`, verificar procedencia y SHA-256 del ZIP de Engram; confirmar que Gentle Shell empaquetado se encuentra en `%LOCALAPPDATA%\gentle-shell\bin`.
+
+```powershell
+& .\windows\bootstrap.ps1 -Component Engram -EngramZip "$HOME\Downloads\engram_3.6.0_windows_amd64.zip" -EngramSha256 "<SHA256_VALIDADO>"
+# Solo tras validar el plan y la politica de TI:
+& .\windows\bootstrap.ps1 -Component Engram -Apply -EngramZip "$HOME\Downloads\engram_3.6.0_windows_amd64.zip" -EngramSha256 "<SHA256_VALIDADO>"
+```
+
+**Validado en la PC de referencia:** sintaxis de setup-engram.ps1 analizada con Parser::ParseFile sin errores; ejecución sin -Apply finalizó reconociendo Engram existente, lanzador WScript, tarea programada y npm:gentle-engram@0.4.2, terminando en [PREVIEW] Ningun archivo, paquete ni tarea fue modificado. El arranque automático manual con WScript también se validó tras reinicio. **Pendiente:** ejecución de instalación desde cero en otro equipo y revisión de las vulnerabilidades npm reportadas. Completar instaladores con manifiestos aprobados para Git, Node, Go, Neovim y Gentle Shell empaquetado. El metodo antiguo `update-gentle-shell.ps1` corresponde a npm global y **no** es el actualizador de la instalacion empaquetada 4.5.1.
+
+
+## Reemplazo o avería del equipo corporativo
+
+Este repositorio se conserva como guía de **recuperación del entorno en una futura computadora**, no como compromiso de probar hoy en una segunda PC. La instalación actual se verificó en Windows Enterprise sin privilegios de administrador: Gentle Shell 4.5.1 con Pi 1.4.0, Engram 3.6.0, servidor local en 127.0.0.1:7437, arranque automático oculto mediante tarea programada con WScript y recuperación de la observación #1 desde Gentle Shell después de reiniciar. Véase `ENGRAM_STATUS.md`.
+
+**Al recibir un equipo nuevo:** comprobar primero las políticas de seguridad y disponibilidad de PowerShell, Node, Git, Go, Neovim y los ejecutables precompilados; revisar la versión fijada y los artefactos de descarga; ejecutar los scripts de este repositorio en modo lectura/plan antes de aplicar cambios; restaurar únicamente respaldos autorizados; verificar manualmente el arranque sin consola, el puerto 7437, la integración mem_* y la recuperación de una observación de prueba. Las operaciones dependientes del equipo nuevo **no están validadas**; no desactivar controles empresariales para forzar la instalación.
+
+**Datos no incluidos en GitHub:** las memorias SQLite locales de Engram (bajo `%USERPROFILE%\.engram` de manera predeterminada), los repositorios y archivos de trabajo, las credenciales, las sesiones y cualquier información corporativa. Antes de migrar, obtener respaldos aprobados por TI, determinar una ubicación corporativa autorizada y verificar integridad y restauración con el servidor detenido. No subir bases de memoria, secretos ni archivos de trabajo al repositorio de scripts. Si el equipo se avería sin respaldo previo, estos datos pueden no ser recuperables.
+
+**Estado de cierre:** entorno actual **VALIDADO**; procedimiento de recuperación **DOCUMENTADO, PENDIENTE DE VALIDACIÓN EN EQUIPO FUTURO**. No se requiere una segunda computadora para cerrar esta etapa.
+
+
+## WezTerm + Herdr (validado en la computadora actual)
+
+Se instaló WezTerm 20240203-110809-5046fc22 (ZIP portátil) en la carpeta de usuario, y Herdr 0.9.5 (ZIP con ConPTY) sin permisos administrativos. El archivo de configuración de Herdr de Gentleman.Dots se aplicó a %APPDATA%/herdr/config.toml y pasó `herdr.exe config check` con resultado `config: ok`.
+
+En %USERPROFILE%/.wezterm.lua se configuró `config.default_prog` con la ruta local de `herdr.exe`, tema OneDark, fuente 11 (ajustada para obtener al menos 140 columnas y mostrar el panel de estado derecho de Gentle Shell) y atajo Ctrl+V para pegar desde el portapapeles. El usuario confirmó que WezTerm abre Herdr automáticamente y que Ctrl+V pega. No se modificó el perfil PowerShell de OneDrive.
+
+Se verificó Gentle Shell con Pi dentro de Herdr, y mem_search recuperó exitosamente la observación 1 del proyecto RBI desde Engram, solo lectura. Una incidencia de texto desalineado en Herdr se corrigió con Clear-Host, pero se debe observar si vuelve a ocurrir. El procedimiento no se ha probado todavía en otro equipo. Gentle AI nativo permanece pendiente.
+
+**Revisión de instalador:** se sustituyó windows/setup-engram.ps1 porque contenía bloques duplicados y sintaxis dañada. La nueva versión utiliza vista previa por defecto, conserva tareas existentes, valida SHA-256 de ZIP nuevo, respeta el lanzador oculto WScript y contempla gentle-engram@0.4.2. **Sintaxis y ejecución de vista previa validadas en Windows real.** La ruta -Apply y la instalación desde cero siguen sin probarse; ejecutar solo cuando se necesite y con controles TI. La instalación manual probada de Engram no valida automáticamente dicho script.
+
+
+## Gentle AI 4.2.0 — BLOQUEADO POR SEGURIDAD CORPORATIVA (29/10/2026)
+
+En Windows Enterprise, usuario sin permisos de administrador, Go 1.27.2 (`windows/amd64`), se ejecutó:
+
+```powershell
+go install github.com/gentleman-programming/gentle-ai/v4/cmd/gentle-ai@v4.2.0
+```
+
+La compilación terminó sin errores y creó `%USERPROFILE%\go\bin\gentle-ai.exe` (27 154 432 bytes). `Get-AuthenticodeSignature` devolvió `NotSigned`. Al ejecutar `& "$HOME\go\bin\gentle-ai.exe" --version`, PowerShell informó `Program 'gentle-ai.exe' failed to run: Access is denied` (`ApplicationFailedException`, `NativeCommandFailed`) y Windows Security pidió credenciales de administrador. El usuario no las tiene. **Estado: BLOCKED_BY_CORPORATE_POLICY (bloqueo observado; la regla exacta no está determinada)**. No se ejecutó `gentle-ai install/setup/sync`; no se modificó la instalación funcional de Gentle Shell, Pi, Engram, Herdr y WezTerm.
+
+Para un equipo futuro, verificar con TI si permite el ejecutable y el procedimiento; **no** desactivar ni eludir controles corporativos. No repetir compilaciones como supuesto remedio: compilar fue posible, ejecutar el resultado no. La distribución precompilada de Engram sí se ejecutó en esta PC, pero ello no implica que otros binarios sean admitidos. Gentle AI independiente no es imprescindible para utilizar el Gentle Shell actualmente funcional.
+
+
+## Revisión de bootstrap y dependencias (2026-11-02)
+
+Se revisaron `bootstrap.ps1`, `install.ps1`, `verify.ps1`, `versions.json` y `setup-engram.ps1`. Se actualizó `bootstrap.ps1` para exigir componente explícito al usar `-Apply`: no permite `-Apply -Component All`, y para herramientas tampoco `-Apply -Component Tools` sin seleccionar `-ToolComponent GCC`, `fzf` o `LazyGit`. Los componentes instalables del bootstrap actual son únicamente esas tres herramientas y Engram; Git, Node, Go, Neovim, WezTerm, Herdr y Gentle Shell empaquetado siguen teniendo instalación separada.
+
+Ejemplos de **vista previa** (sin instalaciones):
+
+```powershell
+& .\windows\bootstrap.ps1 -Component All
+& .\windows\bootstrap.ps1 -Component Tools -ToolComponent fzf
+& .\windows\bootstrap.ps1 -Component Engram
+```
+
+**Limitaciones:** `setup-engram.ps1` y `bootstrap.ps1` fueron comprobados con el parser PowerShell y mediante sus vistas previas sin errores. **La nueva revisión de `bootstrap.ps1` ya superó el análisis de sintaxis y la ejecución de preview en la PC Windows (2026-11-02).** No se ha ejecutado ni validado la instalación completa mediante `-Apply` en equipo nuevo. No ejecutar `-Apply` sin revisión adicional y autorización corporativa. La copia temporal del script de prueba `%TEMP%\verificar-setup-engram.ps1` se puede borrar sin afectar la instalación de Engram.
+
+
+### Resultado real de la vista previa integral (2026-11-02)
+
+El usuario clonó la rama del PR en `%TEMP%\dotfiles-windows-validacion` y ejecutó `& "$repo\windows\bootstrap.ps1" -Component All`, **sin `-Apply`**. Reportó 11/11 herramientas `[OK]` (Git 2.53.0, Node 24.17.0, npm 11.13.0, Go 1.27.2, Neovim 0.12.4, ripgrep 15.2.0, fd 10.5.0, GCC 16.2.0, fzf 0.74.4, LazyGit 0.65.1, Gentle Shell 4.5.1), además de configuración Neovim detectada. `install.ps1` reconoció los tres binarios como `[PRESENT]`. `setup-engram.ps1` reconoció Engram, lanzador WScript, tarea programada y `npm:gentle-engram@0.4.2` como `[PRESENT]`. Finalizó con `[PREVIEW] Bootstrap terminado sin realizar instalaciones.` La sintaxis del archivo `bootstrap.ps1` también había sido validada previamente por el parser PowerShell sin errores.
+
+**Alcance:** se probó el modo lectura/preview en la PC actual, no el camino `-Apply` ni una restauración completa en una computadora nueva. Las copias temporales pueden borrarse después de la prueba. Conservar el PR para revisión/merge solo de acuerdo con la evaluación de riesgos restante.
