@@ -1,5 +1,8 @@
 # Windows Enterprise: Gentleman Programming
 
+> **Actualización operativa 2026-11-14:** la PC de referencia usa **Gentle Shell 4.8.0 (JS npm autónomo), Pi 1.5.2 y Engram 3.6.0 + gentle-engram 0.4.2**, con lanzador único `%USERPROFILE%\apps\bin\gentle-shell.cmd` y home `%USERPROFILE%\apps\GENTLE_SHELL_480\agent-home`. **Guía actual, validaciones, límites y recuperación:** [Gentle Shell 4.8.0 en Windows empresarial](gentle-shell-480-enterprise.md). Los apartados históricos sobre Gentle Shell 4.5.1 y `%LOCALAPPDATA%\gentle-shell\bin` se conservan solo como registro histórico. **No ejecutar** los scripts heredados `setup-engram.ps1` o `update-gentle-shell.ps1` con `-Apply` sobre la topología nueva: aún no están adaptados a ella.
+
+
 Guia para recuperar el entorno en Windows 11 Enterprise sin permisos de administrador, **siempre sujeto a las politicas de TI**. No se modifican los archivos existentes de macOS.
 
 ## Estado de la automatizacion
