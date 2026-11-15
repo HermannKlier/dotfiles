@@ -41,3 +41,47 @@ if (Test-Path -LiteralPath $nvimConfig -PathType Leaf) {
   Write-Host ('[MISSING] Neovim config: ' + $nvimConfig) -ForegroundColor Yellow
 }
 Write-Host 'No changes were made. Run :checkhealth in Neovim for plugin checks.' -ForegroundColor Cyan
+
+Write-Host '--- Gentle Shell JS 4.8.0 / Engram diagnostics (read only) ---'
+$expectedHome = Join-Path $env:USERPROFILE 'apps\GENTLE_SHELL_480\agent-home'
+$expectedLauncher = Join-Path $env:USERPROFILE 'apps\bin\gentle-shell.cmd'
+$gentlePkg = Join-Path $env:USERPROFILE 'apps\GENTLE_SHELL_480\node_modules\gentle-pi\package.json'
+if (Test-Path -LiteralPath $gentlePkg -PathType Leaf) {
+  $version = (Get-Content -LiteralPath $gentlePkg -Raw | ConvertFrom-Json).version
+  Write-Host "[INFO] gentle-pi JS package version: $version"
+} else {
+  Write-Host '[MISSING] gentle-pi JS installation at expected path.'
+}
+if (Test-Path -LiteralPath $expectedLauncher -PathType Leaf) {
+  Write-Host "[INFO] Launcher: $expectedLauncher"
+} else {
+  Write-Host '[MISSING] Isolated Gentle Shell launcher.'
+}
+if (Test-Path -LiteralPath (Join-Path $expectedHome 'settings.json') -PathType Leaf) {
+  $settings = Get-Content -LiteralPath (Join-Path $expectedHome 'settings.json') -Raw | ConvertFrom-Json
+  $packageName = 'npm:gentle-engram@0.4.2'
+  if (@($settings.packages) -contains $packageName) {
+    Write-Host "[OK] Engram extension registered: $packageName"
+  } else {
+    Write-Host '[INFO] gentle-engram@0.4.2 not registered in isolated home.'
+  }
+} else {
+  Write-Host '[MISSING] settings.json under isolated Pi home (do not copy secrets from GitHub).'
+}
+$engramExe = Join-Path $env:USERPROFILE 'apps\engram\engram.exe'
+if (Test-Path -LiteralPath $engramExe -PathType Leaf) {
+  Write-Host "[INFO] Engram executable exists: $engramExe (execution not tested)"
+} else {
+  Write-Host '[MISSING] Engram local executable.'
+}
+try {
+  $client = New-Object System.Net.Sockets.TcpClient
+  try {
+    $async = $client.BeginConnect('127.0.0.1', 7437, $null, $null)
+    if ($async.AsyncWaitHandle.WaitOne(750)) {
+      try { $client.EndConnect($async); Write-Host '[OK] Engram TCP 127.0.0.1:7437 reachable.' }
+      catch { Write-Host '[WARN] Engram TCP connection failed.' }
+    } else { Write-Host '[WARN] Engram TCP timeout.' }
+  } finally { $client.Close() }
+} catch { Write-Host '[WARN] Engram TCP probe unavailable.' }
+Write-Host '[INFO] No mem_* call was made: integration verification requires manual session.'
