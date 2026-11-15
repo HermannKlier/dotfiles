@@ -38,8 +38,17 @@ Write-Host "[INFO] Memorias locales: $HOME\.engram (no se modifican)"
 
 # Comprobaciones previas, todas de solo lectura.
 if (-not (Test-Path -LiteralPath $shell -PathType Leaf)) {
+  if (-not $Apply) {
+    Write-Host '[BLOCKED] Requiere Gentle Shell JS 4.8.0 instalado antes de configurar la extension.' -ForegroundColor Yellow
+    Write-Host '[PREVIEW] Engram omitido; no se aplicaron cambios.'
+    return
+  }
   throw 'Falta el lanzador Gentle Shell 4.8.0 JS de apps\bin. Ejecutar antes setup-gentle-shell-480.ps1 (preview).'
 }
+$piPkg = Join-Path $HOME 'apps\GENTLE_SHELL_480\node_modules\gentle-pi\package.json'
+if (-not (Test-Path -LiteralPath $piPkg -PathType Leaf)) { throw 'No se encuentra gentle-pi en la ruta aislada 4.8.0.' }
+$piVer = (Get-Content -LiteralPath $piPkg -Raw | ConvertFrom-Json).version
+if ($piVer -ne '4.8.0') { throw "Version de gentle-pi inesperada: $piVer" }
 $exeExists = Test-Path -LiteralPath $exe -PathType Leaf
 if (-not $exeExists) {
   if (-not (Test-Path -LiteralPath $ZipPath -PathType Leaf)) {
