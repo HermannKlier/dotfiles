@@ -43,3 +43,14 @@ Tras inicializar el repositorio Git local y reiniciar Gentle Shell desde RID, el
 **Regla operativa de recuperación:** si un proyecto nuevo indica `memory disabled` pero otros proyectos funcionan, verificar primero la raíz de proyecto y `git rev-parse --show-toplevel` antes de tocar la instalación global. Para proyectos que realmente usarán Git, inicializar un repositorio local si aún no existe, y reiniciar Gentle Shell desde esa raíz.
 
 **Alcance de la conclusión:** esto demuestra la solución observada para RID en esta PC, no que Git sea requisito universal de Engram o que todos los mensajes `memory disabled` tengan la misma causa. En otros casos verificar igualmente el proceso, puerto, compatibilidad, registro de extensión y logs.
+
+## Actualización observada el 2026-11-14
+
+- **Versión principal:** Gentle Shell 4.8.0 y Pi 1.5.2, desde `%USERPROFILE%\apps\GENTLE_SHELL_480`; **un único lanzador** localizado por `Get-Command gentle-shell -All` en `apps\bin\gentle-shell.cmd`. La versión funciona también en una nueva sesión PowerShell.
+- **Engram:** servidor 3.6.0 en `127.0.0.1:7437` accesible; `gentle-engram@0.4.2` registrado e instalado vía npm bajo `agent-home\npm\node_modules`. No se requiere directorio `extensions`.
+- **Prueba tras traslado de home:** `mem_doctor` 10/10 sin errores ni advertencias y `mem_search` 9 resultados para un proyecto existente. No se hicieron cambios en memorias; escritura post-traslado aún no validada.
+- **Versiones antiguas:** `gentle-pi` 4.1.0 de `gs` desinstalado con npm; residuo npm de `apps\nodejs` retirado; sus tres lanzadores huérfanos se eliminaron después de comprobar que el paquete ya no existía. El bundle anterior 4.7.0 en `%LOCALAPPDATA%\gentle-shell` se desinstaló solo **parcialmente** por `EPERM` y persisten restos.
+- **Seguridad corporativa:** Engram 3.7.2 y Gentle AI nativo no ejecutables bajo la política observada; no sustituir ejecutables permitidos ni desactivar controles. La actualización a `gentle-engram@0.8.0` no se ha validado. El inicio automático de Engram fue verificado anteriormente, **no** nuevamente tras esta migración.
+- **Topología nueva:** los scripts antiguos de instalación y actualización aún suponen rutas o métodos anteriores. **No ejecutar sus rutas `-Apply`** sin adaptarlos, revisarlos y autorizarlos.
+
+Registro técnico completo y recuperación: [gentle-shell-480-enterprise.md](gentle-shell-480-enterprise.md).
