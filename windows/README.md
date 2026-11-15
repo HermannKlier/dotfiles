@@ -145,3 +145,46 @@ Ejemplos de **vista previa** (sin instalaciones):
 El usuario clonó la rama del PR en `%TEMP%\dotfiles-windows-validacion` y ejecutó `& "$repo\windows\bootstrap.ps1" -Component All`, **sin `-Apply`**. Reportó 11/11 herramientas `[OK]` (Git 2.53.0, Node 24.17.0, npm 11.13.0, Go 1.27.2, Neovim 0.12.4, ripgrep 15.2.0, fd 10.5.0, GCC 16.2.0, fzf 0.74.4, LazyGit 0.65.1, Gentle Shell 4.5.1), además de configuración Neovim detectada. `install.ps1` reconoció los tres binarios como `[PRESENT]`. `setup-engram.ps1` reconoció Engram, lanzador WScript, tarea programada y `npm:gentle-engram@0.4.2` como `[PRESENT]`. Finalizó con `[PREVIEW] Bootstrap terminado sin realizar instalaciones.` La sintaxis del archivo `bootstrap.ps1` también había sido validada previamente por el parser PowerShell sin errores.
 
 **Alcance:** se probó el modo lectura/preview en la PC actual, no el camino `-Apply` ni una restauración completa en una computadora nueva. Las copias temporales pueden borrarse después de la prueba. Conservar el PR para revisión/merge solo de acuerdo con la evaluación de riesgos restante.
+
+## Instalador actualizado (2026-11-14, NO probado con -Apply en PC nueva)
+
+El punto de entrada sigue siendo `windows/bootstrap.ps1`, ahora con el componente
+`GentleShell` que usa `windows/setup-gentle-shell-480.ps1`. La instalacion JS
+**no reemplaza** el bundle completo ni instala Gentle AI nativo, Git Bash,
+autenticacion, Engram, memorias o proyectos.
+
+Vista previa segura (sin cambios):
+
+```powershell
+& .\windows\bootstrap.ps1 -Component All
+& .\windows\bootstrap.ps1 -Component GentleShell
+& .\windows\bootstrap.ps1 -Component Engram
+```
+
+Si la PC nueva no tiene Gentle Shell, la vista previa de Engram puede quedar
+`[BLOCKED]` hasta que se instale su prerrequisito; esto no equivale a fallo
+de instalacion ni a una validacion del equipo nuevo.
+
+**Solo tras revision del codigo y autorizacion TI** (ejemplos de comandos
+disponibles; ruta de aplicacion **NO VALIDADA** en PC nueva):
+
+```powershell
+& .\windows\bootstrap.ps1 -Component GentleShell -Apply
+& .\windows\bootstrap.ps1 -Component Engram -Apply -EngramZip "<ZIP_OFICIAL>" -EngramSha256 "<SHA256_VERIFICADO>"
+```
+
+El script GentleShell usa Node y npm **ya instalados y autorizados**, ejecuta
+`npm install --prefix <user apps/GENTLE_SHELL_480> --ignore-scripts` para
+`gentle-pi@4.8.0`, genera el lanzador si falta y coloca `apps\bin` delante
+del PATH de usuario. No sobrescribe instalaciones incompletas ni lanzadores
+diferentes. El instalador Engram usa el home Pi 4.8.0 y mantiene la version
+probada `gentle-engram@0.4.2`; el ZIP Engram 3.6.0 requiere SHA256 confirmado
+y debe poder ejecutarse conforme a las reglas corporativas.
+
+**Cobertura aun parcial:** `install.ps1` solo automatiza GCC, fzf y LazyGit;
+Git, Node, Go, Neovim, ripgrep, fd, WezTerm, Herdr y otras herramientas se
+verifican/documentan, pero **no hay instalador integral probado** para todas.
+No usar `-Apply -Component All`. No desactivar controles de seguridad.
+No copiar `auth.json`, `.engram`, sesiones ni ficheros corporativos a GitHub.
+
+Detalle operativo: [gentle-shell-480-enterprise.md](gentle-shell-480-enterprise.md).
