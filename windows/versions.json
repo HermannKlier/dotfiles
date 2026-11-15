@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "observed_on": "2026-10-12",
+  "observed_on": "2026-11-14",
   "platform": "Windows 11 Enterprise x64",
-  "note": "Versiones observadas; no implica autorizacion corporativa para instalar. Solo hay URLs y hashes verificados de tres paquetes.",
+  "note": "Versiones observadas; no implica autorizacion corporativa para instalar. Solo GCC, fzf y LazyGit tienen URL+SHA256 verificados en este manifiesto. Gentle Shell 4.8.0 es instalacion JS autonoma (no bundle nativo), con Engram 3.6.0 mantenido por politica.",
   "tools": [
     {
       "name": "Neovim",
@@ -26,14 +26,15 @@
     },
     {
       "name": "Gentle Shell",
-      "version": "4.1.0",
-      "note": "Pi integrado 1.1.0; instalacion omitiendo Gentle AI nativo"
+      "version": "4.8.0",
+      "note": "Pi 1.5.2; launcher %USERPROFILE%\\apps\\bin\\gentle-shell.cmd; home apps\\GENTLE_SHELL_480\\agent-home; bundle nativo no validado.",
+      "status": "verified_js_installation"
     },
     {
       "name": "Gentle AI",
-      "version": "4.1.1",
-      "status": "not_working",
-      "note": "spawn EPERM al verificar binario; consultar TI"
+      "version": "4.5.0",
+      "status": "native_unverified_blocked",
+      "note": "Version objetivo del bundle 4.8.0; no comprobada como instalada/funcional. Binarios Gentle AI anteriores bloqueados por control corporativo."
     },
     {
       "name": "ripgrep",
@@ -60,6 +61,18 @@
       "version": "0.65.1",
       "url": "https://github.com/jesseduffield/lazygit/releases/download/v0.65.1/lazygit_0.65.1_Windows_x86_64.zip",
       "sha256": "bed669be29204932560836a58dc6519ba43c10ea7dc7df63af8a1d96424e191d"
+    },
+    {
+      "name": "Engram",
+      "version": "3.6.0",
+      "status": "verified_read",
+      "note": "Servidor local 127.0.0.1:7437; mem_doctor 10/10 y mem_search 9 resultados tras migracion, escritura post-migracion no verificada. Engram 3.7.2 bloqueado por ASR."
+    },
+    {
+      "name": "gentle-engram",
+      "version": "0.4.2",
+      "status": "verified_read",
+      "note": "Extension instalada via npm en home Pi aislado; 0.8.0 no validada."
     }
   ]
 }
