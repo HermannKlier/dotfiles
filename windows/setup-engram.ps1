@@ -1,10 +1,10 @@
 #requires -Version 5.1
 <#
 .SYNOPSIS
-  Prepara Engram 3.6.0, la extension de Gentle Shell y una tarea oculta al iniciar sesion.
+  Prepara Engram 3.6.0 y gentle-engram 0.4.2 para Gentle Shell JS 4.8.0.
 .DESCRIPTION
   Vista previa por defecto. -Apply requiere aprobacion y cumplimiento de politicas TI.
-  No instala Gentle Shell ni modifica Pi independiente. No sobrescribe memorias.
+  Requiere Gentle Shell 4.8.0 JS ya instalado, con home aislado. No sobrescribe memorias.
   Si falta el ejecutable, requiere ZIP oficial y huella SHA-256 previamente verificada.
   No altera ni sustituye tareas existentes con configuraciones distintas.
   No elimina accesos directos Startup automaticamente.
@@ -23,7 +23,9 @@ $ErrorActionPreference = 'Stop'
 $exe = Join-Path $HOME 'apps\engram\engram.exe'
 $dir = Split-Path -Parent $exe
 $launcher = Join-Path $dir 'iniciar-oculto.vbs'
-$shell = Join-Path $env:LOCALAPPDATA 'gentle-shell\bin\gentle-shell.cmd'
+$shell = Join-Path $HOME 'apps\bin\gentle-shell.cmd'
+$piHome = Join-Path $HOME 'apps\GENTLE_SHELL_480\agent-home'
+$settings = Join-Path $piHome 'settings.json'
 $taskName = 'Engram - Memoria Local'
 $package = 'npm:gentle-engram@0.4.2'
 $expectedExecute = Join-Path $env:WINDIR 'System32\wscript.exe'
@@ -31,11 +33,12 @@ $expectedArgs = '"' + $launcher + '"'
 
 Write-Host "[INFO] Gentle Shell: $shell"
 Write-Host "[INFO] Engram: $exe"
+Write-Host "[INFO] Pi home: $piHome"
 Write-Host "[INFO] Memorias locales: $HOME\.engram (no se modifican)"
 
 # Comprobaciones previas, todas de solo lectura.
 if (-not (Test-Path -LiteralPath $shell -PathType Leaf)) {
-  throw 'Falta Gentle Shell empaquetado. Instalar por un procedimiento autorizado.'
+  throw 'Falta el lanzador Gentle Shell 4.8.0 JS de apps\bin. Ejecutar antes setup-gentle-shell-480.ps1 (preview).'
 }
 $exeExists = Test-Path -LiteralPath $exe -PathType Leaf
 if (-not $exeExists) {
@@ -85,19 +88,19 @@ if ($task) {
   Write-Host '[PLAN] Registrar tarea al iniciar sesion con permisos limitados.'
 }
 
-# La lista es una consulta; no equivale a instalar o actualizar paquetes.
-$packageList = (& $shell list 2>&1 | Out-String)
-if ($LASTEXITCODE -ne 0) {
-  throw 'No se pudo consultar la lista de paquetes de Gentle Shell.'
+# Lectura de settings del home aislado: no confundir con el bundle antiguo.
+$installedPackage = $false
+if (Test-Path -LiteralPath $settings -PathType Leaf) {
+  $settingsData = Get-Content -LiteralPath $settings -Raw | ConvertFrom-Json
+  $installedPackage = @($settingsData.packages) -contains $package
+  $otherEngram = @($settingsData.packages | Where-Object { $_ -match '^npm:gentle-engram(@|$)' -and $_ -ne $package })
+  if ($otherEngram.Count -gt 0) { throw 'Hay otra version gentle-engram registrada. Revisar antes de aplicar.' }
 }
-if ($packageList -match [regex]::Escape($package)) {
-  Write-Host "[PRESENT] $package"
-} elseif ($packageList -match 'npm:gentle-engram(?:@[^\s]+)?') {
-  throw 'Hay otra version de gentle-engram instalada. Revisar antes de actualizar.'
+if ($installedPackage) {
+  Write-Host "[PRESENT] $package registrado en agent-home."
 } else {
-  Write-Host "[PLAN] Instalar $package en el Gentle Shell aislado."
+  Write-Host "[PLAN] Instalar $package en el home aislado de Gentle Shell 4.8.0."
 }
-
 if (-not $Apply) {
   Write-Host '[PREVIEW] Ningun archivo, paquete ni tarea fue modificado.'
   return
@@ -121,7 +124,7 @@ if (-not (Test-Path -LiteralPath $launcher -PathType Leaf)) {
   @($line1, $line2) | Set-Content -LiteralPath $launcher -Encoding Unicode -ErrorAction Stop
 }
 
-if ($packageList -notmatch [regex]::Escape($package)) {
+if (-not $installedPackage) {
   & $shell install $package
   if ($LASTEXITCODE -ne 0) { throw 'Fallo la instalacion de gentle-engram.' }
 }
