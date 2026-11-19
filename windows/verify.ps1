@@ -42,10 +42,10 @@ if (Test-Path -LiteralPath $nvimConfig -PathType Leaf) {
 }
 Write-Host 'No changes were made. Run :checkhealth in Neovim for plugin checks.' -ForegroundColor Cyan
 
-Write-Host '--- Gentle Shell JS 4.8.0 / Engram diagnostics (read only) ---'
-$expectedHome = Join-Path $env:USERPROFILE 'apps\GENTLE_SHELL_480\agent-home'
+Write-Host '--- Gentle Shell JS 4.9.0 / Engram diagnostics (read only) ---'
+$expectedHome = Join-Path $env:USERPROFILE 'apps\GENTLE_SHELL_490\agent-home'
 $expectedLauncher = Join-Path $env:USERPROFILE 'apps\bin\gentle-shell.cmd'
-$gentlePkg = Join-Path $env:USERPROFILE 'apps\GENTLE_SHELL_480\node_modules\gentle-pi\package.json'
+$gentlePkg = Join-Path $env:USERPROFILE 'apps\GENTLE_SHELL_490\node_modules\gentle-pi\package.json'
 if (Test-Path -LiteralPath $gentlePkg -PathType Leaf) {
   $version = (Get-Content -LiteralPath $gentlePkg -Raw | ConvertFrom-Json).version
   Write-Host "[INFO] gentle-pi JS package version: $version"
