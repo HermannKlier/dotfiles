@@ -3,7 +3,7 @@
 > **Actualización 2026-11-19 — Gentle Shell 4.9.0:** la instalación principal en el equipo de referencia ahora usa `gentle-pi@4.9.0` (Pi 1.5.2), home `%USERPROFILE%\apps\GENTLE_SHELL_490\agent-home` y un lanzador `apps\bin\gentle-shell.cmd`. Engram permanece en 3.6.0 con extensión 0.4.2. **Procedimiento completo, evidencia y reversión:** [gentle-shell-490-enterprise.md](gentle-shell-490-enterprise.md). Los apartados 4.8.0 y anteriores son históricos y no son la configuración vigente. El instalador `-Apply` 4.9.0 aún no ha sido probado en PC nueva. No ejecutar los scripts npm globales heredados como actualizadores de esta instalación aislada.
 
 
-> **Actualización operativa 2026-11-14:** la PC de referencia usa **Gentle Shell 4.8.0 (JS npm autónomo), Pi 1.5.2 y Engram 3.6.0 + gentle-engram 0.4.2**, con lanzador único `%USERPROFILE%\apps\bin\gentle-shell.cmd` y home `%USERPROFILE%\apps\GENTLE_SHELL_480\agent-home`. **Guía actual, validaciones, límites y recuperación:** [Gentle Shell 4.8.0 en Windows empresarial](gentle-shell-480-enterprise.md). Los apartados históricos sobre Gentle Shell 4.5.1 y `%LOCALAPPDATA%\gentle-shell\bin` se conservan solo como registro histórico. **No ejecutar** los scripts heredados `setup-engram.ps1` o `update-gentle-shell.ps1` con `-Apply` sobre la topología nueva: aún no están adaptados a ella.
+> **Registro histórico 2026-11-14 (sustituido por 4.9.0):** la PC de referencia usa **Gentle Shell 4.8.0 (JS npm autónomo), Pi 1.5.2 y Engram 3.6.0 + gentle-engram 0.4.2**, con lanzador único `%USERPROFILE%\apps\bin\gentle-shell.cmd` y home `%USERPROFILE%\apps\GENTLE_SHELL_480\agent-home`. **Guía actual, validaciones, límites y recuperación:** [Gentle Shell 4.8.0 en Windows empresarial](gentle-shell-480-enterprise.md). Los apartados históricos sobre Gentle Shell 4.5.1 y `%LOCALAPPDATA%\gentle-shell\bin` se conservan solo como registro histórico. **Nota histórica:** `setup-engram.ps1` se adaptó posteriormente al home 4.9.0, pero su ruta `-Apply` sigue sin probarse; `update-gentle-shell.ps1` es un actualizador npm-global heredado, no apto para este entorno aislado.
 
 
 Guia para recuperar el entorno en Windows 11 Enterprise sin permisos de administrador, **siempre sujeto a las politicas de TI**. No se modifican los archivos existentes de macOS.
@@ -13,7 +13,7 @@ Guia para recuperar el entorno en Windows 11 Enterprise sin permisos de administ
 - `install.ps1`: primera version, **no probada aun en un equipo Windows nuevo**. Solo contempla **GCC/WinLibs, fzf y LazyGit**.
 - `verify.ps1`: verificacion de comandos disponibles; no instala nada.
 - `versions.json`: versiones observadas y SHA-256 verificados de esos tres ZIP.
-- Git, Node.js, Go, Neovim y Gentle Shell aun **no forman parte del instalador**.
+- Git, Node.js, Go y Neovim siguen sin instalador completo; Gentle Shell JS 4.9.0 cuenta con un componente aislado en `bootstrap.ps1` (ruta `-Apply` pendiente de validación en PC nueva).
 
 ## Prueba segura en un equipo donde las herramientas ya funcionan
 
@@ -58,7 +58,7 @@ Gentle Shell funciona con Pi integrado. Gentle AI **nativo no funciona** en el e
 
 ## Actualizar Gentle Shell
 
-**Instalacion actual:** Gentle Shell 4.5.1 con Pi 1.4.0 empaquetado en `%LOCALAPPDATA%\\gentle-shell\\bin`. El script heredado `update-gentle-shell.ps1` administra una instalacion **npm global anterior** y **no debe ejecutarse para actualizar la instalacion empaquetada actual**. En una migracion verificar primero el metodo oficial de instalacion y la politica de TI; no forzar `GENTLE_PI_SKIP_GENTLE_AI_INSTALL` ni ejecutar acciones de reparacion del metodo antiguo. Gentle AI nativo permanece bloqueado por controles corporativos.
+**Instalación histórica (no vigente):** Gentle Shell 4.5.1 con Pi 1.4.0 empaquetado en `%LOCALAPPDATA%\\gentle-shell\\bin`. El script heredado `update-gentle-shell.ps1` administra una instalacion **npm global anterior** y **no debe ejecutarse para actualizar la instalacion empaquetada actual**. En una migracion verificar primero el metodo oficial de instalacion y la politica de TI; no forzar `GENTLE_PI_SKIP_GENTLE_AI_INSTALL` ni ejecutar acciones de reparacion del metodo antiguo. Gentle AI nativo permanece bloqueado por controles corporativos.
 
 ## Seguridad
 
