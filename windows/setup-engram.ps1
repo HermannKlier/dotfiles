@@ -1,10 +1,10 @@
 #requires -Version 5.1
 <#
 .SYNOPSIS
-  Prepara Engram 3.6.0 y gentle-engram 0.4.2 para Gentle Shell JS 4.8.0.
+  Prepara Engram 3.6.0 y gentle-engram 0.4.2 para Gentle Shell JS 4.9.0.
 .DESCRIPTION
   Vista previa por defecto. -Apply requiere aprobacion y cumplimiento de politicas TI.
-  Requiere Gentle Shell 4.8.0 JS ya instalado, con home aislado. No sobrescribe memorias.
+  Requiere Gentle Shell 4.9.0 JS ya instalado, con home aislado. No sobrescribe memorias.
   Si falta el ejecutable, requiere ZIP oficial y huella SHA-256 previamente verificada.
   No altera ni sustituye tareas existentes con configuraciones distintas.
   No elimina accesos directos Startup automaticamente.
@@ -24,7 +24,7 @@ $exe = Join-Path $HOME 'apps\engram\engram.exe'
 $dir = Split-Path -Parent $exe
 $launcher = Join-Path $dir 'iniciar-oculto.vbs'
 $shell = Join-Path $HOME 'apps\bin\gentle-shell.cmd'
-$piHome = Join-Path $HOME 'apps\GENTLE_SHELL_480\agent-home'
+$piHome = Join-Path $HOME 'apps\GENTLE_SHELL_490\agent-home'
 $settings = Join-Path $piHome 'settings.json'
 $taskName = 'Engram - Memoria Local'
 $package = 'npm:gentle-engram@0.4.2'
@@ -39,16 +39,16 @@ Write-Host "[INFO] Memorias locales: $HOME\.engram (no se modifican)"
 # Comprobaciones previas, todas de solo lectura.
 if (-not (Test-Path -LiteralPath $shell -PathType Leaf)) {
   if (-not $Apply) {
-    Write-Host '[BLOCKED] Requiere Gentle Shell JS 4.8.0 instalado antes de configurar la extension.' -ForegroundColor Yellow
+    Write-Host '[BLOCKED] Requiere Gentle Shell JS 4.9.0 instalado antes de configurar la extension.' -ForegroundColor Yellow
     Write-Host '[PREVIEW] Engram omitido; no se aplicaron cambios.'
     return
   }
-  throw 'Falta el lanzador Gentle Shell 4.8.0 JS de apps\bin. Ejecutar antes setup-gentle-shell-480.ps1 (preview).'
+  throw 'Falta el lanzador Gentle Shell 4.9.0 JS de apps\bin. Ejecutar antes setup-gentle-shell-490.ps1 (preview).'
 }
-$piPkg = Join-Path $HOME 'apps\GENTLE_SHELL_480\node_modules\gentle-pi\package.json'
-if (-not (Test-Path -LiteralPath $piPkg -PathType Leaf)) { throw 'No se encuentra gentle-pi en la ruta aislada 4.8.0.' }
+$piPkg = Join-Path $HOME 'apps\GENTLE_SHELL_490\node_modules\gentle-pi\package.json'
+if (-not (Test-Path -LiteralPath $piPkg -PathType Leaf)) { throw 'No se encuentra gentle-pi en la ruta aislada 4.9.0.' }
 $piVer = (Get-Content -LiteralPath $piPkg -Raw | ConvertFrom-Json).version
-if ($piVer -ne '4.8.0') { throw "Version de gentle-pi inesperada: $piVer" }
+if ($piVer -ne '4.9.0') { throw "Version de gentle-pi inesperada: $piVer" }
 $exeExists = Test-Path -LiteralPath $exe -PathType Leaf
 if (-not $exeExists) {
   if (-not (Test-Path -LiteralPath $ZipPath -PathType Leaf)) {
@@ -108,7 +108,7 @@ if (Test-Path -LiteralPath $settings -PathType Leaf) {
 if ($installedPackage) {
   Write-Host "[PRESENT] $package registrado en agent-home."
 } else {
-  Write-Host "[PLAN] Instalar $package en el home aislado de Gentle Shell 4.8.0."
+  Write-Host "[PLAN] Instalar $package en el home aislado de Gentle Shell 4.9.0."
 }
 if (-not $Apply) {
   Write-Host '[PREVIEW] Ningun archivo, paquete ni tarea fue modificado.'
