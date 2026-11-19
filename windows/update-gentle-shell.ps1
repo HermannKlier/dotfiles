@@ -9,6 +9,17 @@ param(
   [switch]$PersistSkipFlag
 )
 $ErrorActionPreference = 'Stop'
+# Guard: this legacy npm-global updater is incompatible with isolated 4.8/4.9.
+$isolatedLauncher = Join-Path $env:USERPROFILE 'apps\bin\gentle-shell.cmd'
+if (Test-Path -LiteralPath $isolatedLauncher -PathType Leaf) {
+  Write-Warning 'Script heredado: detectada instalacion aislada de Gentle Shell 4.8/4.9.'
+  if ($Apply) {
+    throw 'No aplicar actualizacion npm global sobre el lanzador aislado. Usar setup-gentle-shell-490.ps1 o el procedimiento de migracion versionado.'
+  }
+  Write-Host '[PREVIEW] Metodo heredado omitido. Sin cambios.'
+  return
+}
+
 $package = 'gentle-pi'
 $skipName = 'GENTLE_PI_SKIP_GENTLE_AI_INSTALL'
 
