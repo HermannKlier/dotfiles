@@ -54,3 +54,16 @@ Tras inicializar el repositorio Git local y reiniciar Gentle Shell desde RID, el
 - **Topología nueva:** los scripts antiguos de instalación y actualización aún suponen rutas o métodos anteriores. **No ejecutar sus rutas `-Apply`** sin adaptarlos, revisarlos y autorizarlos.
 
 Registro técnico completo y recuperación: [gentle-shell-480-enterprise.md](gentle-shell-480-enterprise.md).
+
+## Validación Gentle Shell 4.9.0 (2026-11-18 al 2026-11-19)
+
+- Se mantuvo **Engram 3.6.0**, puerto local **127.0.0.1:7437**, y **gentle-engram 0.4.2** dentro del home aislado de Gentle Shell **4.9.0**.
+- Inicialmente se observó `ambiguous project` / `caller_context_missing` al iniciar fuera de una raíz Git unívoca. Dentro del repositorio RBI, `mem_doctor` reconoció **rbi** sin especificarlo, informó **10/10 OK** y `caller_binding: ok`. `mem_search` recuperó **9 resultados**.
+- `mem_save` guardó la observación de prueba **#169** con título `VALIDACION_GENTLE_SHELL_490_20261118` y búsqueda posterior recuperó el registro exacto; ninguna memoria preexistente fue modificada.
+- El subagente `gentle-ai-explore` inspeccionó únicamente nombres de carpetas de RBI, sin leer credenciales, modificar archivos ni instalar nada; delegación terminó sin errores.
+- Se comprobó funcionamiento de la interfaz de Gentle Shell 4.9.0 en Herdr desde RID, con indicador `rid · ready`.
+- El **2026-11-19** se promovió la instalación de prueba a `apps\GENTLE_SHELL_490` y se cambió el lanzador `apps\bin\gentle-shell.cmd`. La salida `gentle-shell --version` confirmó **4.9.0 / Pi 1.5.2 / home definitivo**.
+- **Pendiente:** revalidar Engram después de mover el home, verificar en PowerShell nuevo y probar instalador `-Apply` en equipo limpio. Las verificaciones de Engram, la autenticación y los subagentes anteriores fueron realizadas sobre el home **de pruebas** antes del cambio de carpeta.
+- Engram **3.7.2** y Gentle AI nativo permanecen sujetos a bloqueo de Windows Defender ASR: no desactivar protecciones ni intentar eludir las reglas corporativas.
+
+Detalles, respaldo y reversión: [gentle-shell-490-enterprise.md](gentle-shell-490-enterprise.md).
