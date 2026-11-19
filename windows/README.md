@@ -1,5 +1,8 @@
 # Windows Enterprise: Gentleman Programming
 
+> **Actualización 2026-11-19 — Gentle Shell 4.9.0:** la instalación principal en el equipo de referencia ahora usa `gentle-pi@4.9.0` (Pi 1.5.2), home `%USERPROFILE%\apps\GENTLE_SHELL_490\agent-home` y un lanzador `apps\bin\gentle-shell.cmd`. Engram permanece en 3.6.0 con extensión 0.4.2. **Procedimiento completo, evidencia y reversión:** [gentle-shell-490-enterprise.md](gentle-shell-490-enterprise.md). Los apartados 4.8.0 y anteriores son históricos y no son la configuración vigente. El instalador `-Apply` 4.9.0 aún no ha sido probado en PC nueva. No ejecutar los scripts npm globales heredados como actualizadores de esta instalación aislada.
+
+
 > **Actualización operativa 2026-11-14:** la PC de referencia usa **Gentle Shell 4.8.0 (JS npm autónomo), Pi 1.5.2 y Engram 3.6.0 + gentle-engram 0.4.2**, con lanzador único `%USERPROFILE%\apps\bin\gentle-shell.cmd` y home `%USERPROFILE%\apps\GENTLE_SHELL_480\agent-home`. **Guía actual, validaciones, límites y recuperación:** [Gentle Shell 4.8.0 en Windows empresarial](gentle-shell-480-enterprise.md). Los apartados históricos sobre Gentle Shell 4.5.1 y `%LOCALAPPDATA%\gentle-shell\bin` se conservan solo como registro histórico. **No ejecutar** los scripts heredados `setup-engram.ps1` o `update-gentle-shell.ps1` con `-Apply` sobre la topología nueva: aún no están adaptados a ella.
 
 
@@ -188,3 +191,20 @@ No usar `-Apply -Component All`. No desactivar controles de seguridad.
 No copiar `auth.json`, `.engram`, sesiones ni ficheros corporativos a GitHub.
 
 Detalle operativo: [gentle-shell-480-enterprise.md](gentle-shell-480-enterprise.md).
+
+## Entradas del instalador Windows actualizadas (2026-11-19)
+
+- `bootstrap.ps1` dispone de `-Component GentleShell` que prepara Gentle Shell **4.9.0 JS** desde `setup-gentle-shell-490.ps1`; el componente `Engram` revisa el home aislado 4.9.0 con `gentle-engram@0.4.2`.
+- `verify.ps1` ahora incluye diagnósticos solo lectura sobre carpeta Pi, extensión, servidor local y lanzador.
+- Para vista previa sin cambios, desde una copia autorizada de la rama:
+
+```powershell
+& .\windows\bootstrap.ps1 -Component All
+& .\windows\bootstrap.ps1 -Component GentleShell
+& .\windows\bootstrap.ps1 -Component Engram
+```
+
+- `-Apply -Component All` está prohibido por diseño; el modo `-Apply` por componente requiere revisión de código y autorización TI. No está probado en instalación limpia.
+- El procedimiento de **migración 4.8 → 4.9** y su reversión es distinto del instalador para PC nueva. **No ejecutar `setup-gentle-shell-490.ps1 -Apply` sobre un lanzador 4.8.0 existente**: el script rechaza reemplazarlo y se debe realizar la promoción controlada documentada.
+- Esta automatización **todavía no instala por sí sola** Git, Node.js, Go, Neovim, WezTerm, Herdr, y otros componentes. Los scripts `install.ps1` solamente gestionan GCC, fzf y LazyGit.
+- No almacenar en GitHub `auth.json`, memorias, base SQLite, sesiones, tokens ni datos corporativos.
