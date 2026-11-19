@@ -1,8 +1,8 @@
 {
   "schema_version": 1,
-  "observed_on": "2026-11-14",
+  "observed_on": "2026-11-19",
   "platform": "Windows 11 Enterprise x64",
-  "note": "Versiones observadas; no implica autorizacion corporativa para instalar. Solo GCC, fzf y LazyGit tienen URL+SHA256 verificados en este manifiesto. Gentle Shell 4.8.0 es instalacion JS autonoma (no bundle nativo), con Engram 3.6.0 mantenido por politica.",
+  "note": "Versiones comprobadas en PC empresarial sin admin; migracion local 4.9.0 valida via --version y pruebas previas en sandbox. Solo GCC/fzf/LazyGit tienen URL y SHA256 verificados en este manifiesto. Installer 4.9.0 -Apply NO validado en PC nueva.",
   "tools": [
     {
       "name": "Neovim",
@@ -26,15 +26,15 @@
     },
     {
       "name": "Gentle Shell",
-      "version": "4.8.0",
-      "note": "Pi 1.5.2; launcher %USERPROFILE%\\apps\\bin\\gentle-shell.cmd; home apps\\GENTLE_SHELL_480\\agent-home; bundle nativo no validado.",
-      "status": "verified_js_installation"
+      "version": "4.9.0",
+      "note": "Pi 1.5.2; principal apps\\bin\\gentle-shell.cmd y home apps\\GENTLE_SHELL_490\\agent-home; prueba de version luego del cambio. Herdr+RID, mem_doctor, mem_search, mem_save, delegation validados antes del cambio de ruta en directorio TEST.",
+      "status": "validated_local_launcher"
     },
     {
       "name": "Gentle AI",
-      "version": "4.5.0",
-      "status": "native_unverified_blocked",
-      "note": "Version objetivo del bundle 4.8.0; no comprobada como instalada/funcional. Binarios Gentle AI anteriores bloqueados por control corporativo."
+      "version": "4.6.0",
+      "status": "pinned_native_not_validated",
+      "note": "Pin upstream de Shell 4.9.0; ejecutable nativo NO validado y sujeto a bloqueo corporativo. No implica instalacion funcional."
     },
     {
       "name": "ripgrep",
@@ -65,14 +65,14 @@
     {
       "name": "Engram",
       "version": "3.6.0",
-      "status": "verified_read",
-      "note": "Servidor local 127.0.0.1:7437; mem_doctor 10/10 y mem_search 9 resultados tras migracion, escritura post-migracion no verificada. Engram 3.7.2 bloqueado por ASR."
+      "status": "verified_read_write_before_rename",
+      "note": "Servidor 3.6.0 en 127.0.0.1:7437. En Shell 4.9.0 TEST mem_doctor 10/10, mem_search y mem_save ID 169 recuperada; falta retest tras renombrar home."
     },
     {
       "name": "gentle-engram",
       "version": "0.4.2",
-      "status": "verified_read",
-      "note": "Extension instalada via npm en home Pi aislado; 0.8.0 no validada."
+      "status": "verified_490_test",
+      "note": "0.4.2 instalado en home aislado 4.9.0; pruebas lectura y escritura en sandbox antes del renombrado."
     }
   ]
 }
