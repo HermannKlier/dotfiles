@@ -102,6 +102,11 @@ $installedPackage = $false
 if (Test-Path -LiteralPath $settings -PathType Leaf) {
   $settingsData = Get-Content -LiteralPath $settings -Raw | ConvertFrom-Json
   $installedPackage = @($settingsData.packages) -contains $package
+  $physicalPackage = Join-Path $piHome 'npm\node_modules\gentle-engram\package.json'
+  if ($installedPackage -and -not (Test-Path -LiteralPath $physicalPackage -PathType Leaf)) {
+    Write-Host '[WARN] Extension registrada pero el paquete fisico falta; se planificara reparacion.' -ForegroundColor Yellow
+    $installedPackage = $false
+  }
   $otherEngram = @($settingsData.packages | Where-Object { $_ -match '^npm:gentle-engram(@|$)' -and $_ -ne $package })
   if ($otherEngram.Count -gt 0) { throw 'Hay otra version gentle-engram registrada. Revisar antes de aplicar.' }
 }
