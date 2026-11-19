@@ -46,7 +46,10 @@ if ($launcherExists) {
   $normalized = $actual.Replace([string][char]13, '')
   $normalizedExpected = $expected.Replace([string][char]13, '')
   if ($normalized -cne $normalizedExpected) {
-    throw "Hay otro lanzador en $launcher. No se sobreescribe ni en modo -Apply. Usar migracion manual con respaldo."
+    if ($Apply) {
+      throw "Existe otro lanzador en $launcher. No se sobreescribe. Usar migracion documentada con respaldo."
+    }
+    Write-Host '[PREVIEW] Lanzador diferente detectado; no se reemplazara.' -ForegroundColor Yellow
   }
 }
 Write-Host "[INFO] gentle-pi@4.9.0: $(if ($installed) { 'PRESENT' } else { 'MISSING' })"
