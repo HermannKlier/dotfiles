@@ -3,10 +3,10 @@
 .SYNOPSIS
   Vista previa asistida del entorno Windows corporativo.
 .DESCRIPTION
-  Modo normal: solo consultas. -Apply requiere seleccionar Tools o Engram de forma
+  Modo normal: solo consultas. -Apply requiere seleccionar un componente de forma
   explicita; no se admite -Apply -Component All para evitar cambios masivos.
   Tools instala solo GCC, fzf o LazyGit (componente especifico obligatorio).
-  GentleShell restaura gentle-pi 4.8.0 JS; Engram usa un servidor 3.6.0 permitido.
+  GentleShell restaura gentle-pi 4.9.0 JS; Engram usa un servidor 3.6.0 permitido.
   Las rutas -Apply NO estan validadas en una PC nueva y requieren autorizacion TI.
   Nunca eleva privilegios ni cambia politicas de seguridad.
 #>
@@ -22,7 +22,7 @@ $ErrorActionPreference = 'Stop'
 $verify = Join-Path $PSScriptRoot 'verify.ps1'
 $toolsScript = Join-Path $PSScriptRoot 'install.ps1'
 $engramScript = Join-Path $PSScriptRoot 'setup-engram.ps1'
-$gentleScript = Join-Path $PSScriptRoot 'setup-gentle-shell-480.ps1'
+$gentleScript = Join-Path $PSScriptRoot 'setup-gentle-shell-490.ps1'
 
 if ($Apply -and $Component -eq 'All') {
   throw 'Para aplicar cambios, elegir explicitamente -Component Tools, -Component GentleShell o -Component Engram. All solo admite preview.'
@@ -45,7 +45,7 @@ if ($Component -in @('All','Tools')) {
   & $toolsScript -Apply:$Apply -Component $ToolComponent
 }
 if ($Component -in @('All','GentleShell')) {
-  Write-Host '[STAGE] Gentle Shell 4.8.0 JS independiente'
+  Write-Host '[STAGE] Gentle Shell 4.9.0 JS independiente'
   & $gentleScript -Apply:$Apply
 }
 if ($Component -in @('All','Engram')) {
